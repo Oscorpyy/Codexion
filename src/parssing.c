@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 12:59:29 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/08 15:37:31 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/21 16:13:05 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	parssing(t_args *args, int argc, char **argv)
 	args->dongle_cooldown = parse_int(argv[7]);
 	if (args->number_of_coders < 0 || args->time_to_burnout < 0 || args->time_to_compile < 0
 		|| args->time_to_debug < 0 || args->time_to_refactor < 0
-		|| args->number_of_compiles_required < 0 || args->dongle_cooldown < 0)
+		|| args->number_of_compiles_required <= 0 || args->dongle_cooldown < 0)
 	{
 		printf("Error: invalid arguments (must be positive integers <= INT_MAX)\n");
 		return (1);

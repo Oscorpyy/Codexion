@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 12:59:33 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/20 16:50:49 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/21 16:59:40 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,17 +68,18 @@ int init_threads(pthread_mutex_t *mutex, t_coder *coders, t_all *all, int number
 		coders[i].all = all;
 		coders[i].last_compile_time = all->start_time;
 		coders[i].compiles_done = 0;
+		
 		pthread_mutex_init(&coders[i].coder_mutex, NULL);
 		
 		if (pthread_create(&coders[i].thread_id, NULL, coder_routine, &coders[i]) != 0) {
 			pthread_mutex_lock(mutex);
 			printf("Erreur : impossible de créer le thread du codeur %d\n", coders[i].id);
 			pthread_mutex_unlock(mutex);
-			return (1);
+			return (i);
 		}
 		i++;
 	}
-	return (0);
+	return (i);
 }
 
 void monitor_routine(t_all *all, t_coder *coders)
@@ -131,21 +132,33 @@ int	main(int argc, char **argv)
 	pthread_mutex_t mutex;
 	t_all *all;
 	int i;
+	int num_created;
 
-	all = malloc(sizeof(t_all));
-	args = malloc(sizeof(t_args));
+	all = calloc(1, sizeof(t_all));
+	args = calloc(1, sizeof(t_args));
 	if (!args || !all)
 	{
+		if (args)
+			free(args);
+		if (all)
+			free(all);
 		printf("Error: malloc failed\n");
 		return (1);
 	}
 	if (parssing(args, argc, argv))
 	{
 		free(args);
+		free(all);
 		printf("Error: parssing failed\n");
 		return (1);
 	}
-	coder = malloc(sizeof(t_coder) * args->number_of_coders);
+	if (args->number_of_coders <= 0 || args->number_of_compiles_required == 0)
+	{
+		free(args);
+		free(all);
+		return (0);
+	}
+	coder = calloc(1, sizeof(t_coder) * args->number_of_coders);
 	if (!coder)	{
 		printf("Error: malloc failed\n");
 		free(args);
@@ -164,21 +177,28 @@ int	main(int argc, char **argv)
 	pthread_mutex_init(&all->run_mutex, NULL);
 	all->coders = coder;
 
-	init_threads(&mutex, coder, all, args->number_of_coders);
+	num_created = init_threads(&mutex, coder, all, args->number_of_coders);
 	
-	monitor_routine(all, coder);
+	if (num_created == args->number_of_coders)
+		monitor_routine(all, coder);
+	else
+	{
+		pthread_mutex_lock(&all->run_mutex);
+		all->is_running = 0;
+		pthread_mutex_unlock(&all->run_mutex);
+	}
 	
 	i = 0;
-	while (i < args->number_of_coders) {
+	while (i < num_created) {
 		pthread_join(coder[i].thread_id, NULL);
 		pthread_mutex_destroy(&coder[i].coder_mutex);
 		i++;
 	}
 
+	pthread_mutex_destroy(&mutex);
+	pthread_mutex_destroy(&all->run_mutex);
 	free(args);
 	free(coder);
 	free(all);
-	pthread_mutex_destroy(&mutex);
-	pthread_mutex_destroy(&all->run_mutex);
 	return (0);
 }
