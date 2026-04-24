@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 12:59:29 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/21 16:13:05 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/24 12:20:07 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,25 @@ static int	parse_int(const char *str)
 	return ((int)res);
 }
 
+static int	check_args(t_args *args, char **argv)
+{
+	if (args->number_of_coders < 0 || args->time_to_burnout < 0
+		|| args->time_to_compile < 0 || args->time_to_debug < 0
+		|| args->time_to_refactor < 0
+		|| args->number_of_compiles_required <= 0
+		|| args->dongle_cooldown < 0)
+	{
+		printf("Error: invalid arguments (positive integers <= INT_MAX)\n");
+		return (1);
+	}
+	if (strcmp(argv[8], "fifo") != 0 && strcmp(argv[8], "edf") != 0)
+	{
+		printf("Error: scheduler must be 'fifo' or 'edf'\n");
+		return (1);
+	}
+	return (0);
+}
+
 int	parssing(t_args *args, int argc, char **argv)
 {
 	if (argc != 9)
@@ -49,18 +68,24 @@ int	parssing(t_args *args, int argc, char **argv)
 	args->time_to_refactor = parse_int(argv[5]);
 	args->number_of_compiles_required = parse_int(argv[6]);
 	args->dongle_cooldown = parse_int(argv[7]);
-	if (args->number_of_coders < 0 || args->time_to_burnout < 0 || args->time_to_compile < 0
-		|| args->time_to_debug < 0 || args->time_to_refactor < 0
-		|| args->number_of_compiles_required <= 0 || args->dongle_cooldown < 0)
-	{
-		printf("Error: invalid arguments (must be positive integers <= INT_MAX)\n");
-		return (1);
-	}
-	if (strcmp(argv[8], "fifo") != 0 && strcmp(argv[8], "edf") != 0)
-	{
-		printf("Error: scheduler must be 'fifo' or 'edf'\n");
-		return (1);
-	}
 	args->scheduler = argv[8];
+	if (check_args(args, argv))
+		return (1);
 	return (0);
+}
+
+void	cleanup(t_args *args, t_all *a, t_coder *co, pthread_mutex_t *mut)
+{
+	int	i;
+
+	i = -1;
+	while (++i < args->number_of_coders)
+	{
+		if (co[i].thread_id)
+			pthread_join(co[i].thread_id, NULL);
+		pthread_mutex_destroy(&co[i].coder_mutex);
+	}
+	pthread_mutex_destroy(mut);
+	pthread_mutex_destroy(&a->run_mutex);
+	free_all(args, a, co);
 }

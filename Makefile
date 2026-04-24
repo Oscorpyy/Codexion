@@ -6,7 +6,7 @@
 #    By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/08 13:35:54 by opernod           #+#    #+#              #
-#    Updated: 2026/04/21 16:05:46 by opernod          ###   ########lyon.fr    #
+#    Updated: 2026/04/24 14:18:17 by opernod          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,11 +38,14 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
-	@echo "$(COLOR_GREEN)$(NAME) compiled successfully!$(COLOR_RESET)"
+	@echo "$(COLOR_BLUE)$(NAME) compiled successfully!$(COLOR_RESET)"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
-	@echo "$(COLOR_CYAN) Compiling: $<$(COLOR_RESET)"
+	@CURRENT=`ls -1 $(OBJ_DIR)/*.o 2>/dev/null | wc -l`; \
+	TOTAL=$(words $(SRCS)); \
+	PERCENT=$$((CURRENT * 100 / TOTAL)); \
+	printf "$(COLOR_GREEN)[%d%%]$(COLOR_BLUE) Compiling : $(notdir $<)$(COLOR_RESET)\n" "$$PERCENT"
 
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
@@ -99,13 +102,18 @@ define RUN_TESTS
 	@echo "Press Enter to run : $(1) 2 1000 200 100 100 10 0 fifo"; read dummy; $(1) 2 1000 200 100 100 10 0 fifo || true
 endef
 
-tester: all
+test: all
 	$(call RUN_TESTS,./$(NAME))
 
-tester_val: all
+test_val: all
 	$(call RUN_TESTS,$(valgrind_args) ./$(NAME))
 
-tester_hell: all
+test_hell: all
 	$(call RUN_TESTS,$(helgrind_args) ./$(NAME))
 
-.PHONY: all clean fclean re run tester tester_val tester_hell valgrind helgrind
+lint:
+	@echo "$(COLOR_BLUE)Running norminette...$(COLOR_RESET)"
+	@norminette -R CheckForbiddenSourceHeader $(SRCS) $(SRC_DIR) 2>&1 | grep -v "OK" | awk 'NR==1{first=$$0} NR>1{print} END{if(NR<=1) print "\033[34m[\033[37mOK\033[31m]\033[0m"}'
+	@echo "$(COLOR_BLUE)Norminette check completed.$(COLOR_RESET)"
+
+.PHONY: all clean fclean re run test test_val test_hell valgrind helgrind lint
