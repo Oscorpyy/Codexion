@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 13:09:44 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/24 14:09:04 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/24 17:54:43 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ long	get_time(void);
 int		check_running(t_all *all);
 void	free_all(t_args *args, t_all *all, t_coder *coder);
 int		setup_mutex(pthread_mutex_t *m, t_all *all, t_args *args, t_coder *c);
-void	ft_usleep(long time_in_ms, t_all *all);
+void	ft_usleep(long time_in_ms, t_coder *coder);
+int		check_burnout(t_all *all, t_coder *co, int i, long current);
 
 #endif

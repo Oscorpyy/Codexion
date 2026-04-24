@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 10:00:00 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/24 14:09:04 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/24 17:54:43 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	acquire_dongles_edf(t_all *all, t_coder *coder)
 		pthread_mutex_lock(&coder->coder_mutex);
 		coder->last_compile_time = get_time();
 		pthread_mutex_unlock(&coder->coder_mutex);
-		ft_usleep(all->args->time_to_compile, all);
+		ft_usleep(all->args->time_to_compile, coder);
 		pthread_mutex_lock(&coder->coder_mutex);
 		coder->compiles_done++;
 		pthread_mutex_unlock(&coder->coder_mutex);
@@ -35,8 +35,12 @@ void	acquire_dongles_edf(t_all *all, t_coder *coder)
 			&& coder->compiles_done >= all->args->number_of_compiles_required)
 			break ;
 		print_state(coder, "is debugging");
-		ft_usleep(all->args->time_to_debug, all);
+		ft_usleep(all->args->time_to_debug, coder);
 		print_state(coder, "is refactoring");
-		ft_usleep(all->args->time_to_refactor, all);
+		ft_usleep(all->args->time_to_refactor, coder);
+		pthread_mutex_lock(&coder->coder_mutex);
+		if (check_burnout(all, all->coders, coder->id - 1, get_time()))
+			break ;
+		pthread_mutex_unlock(&coder->coder_mutex);
 	}
 }

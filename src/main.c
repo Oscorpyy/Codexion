@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 12:59:33 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/24 17:49:02 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/24 17:54:43 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,12 @@ int	check_burnout(t_all *all, t_coder *coders, int i, long current_time)
 	if (current_time - coders[i].last_compile_time > all->args->time_to_burnout)
 	{
 		pthread_mutex_lock(&all->run_mutex);
+		if (!all->is_running)
+		{
+			pthread_mutex_unlock(&all->run_mutex);
+			pthread_mutex_unlock(&coders[i].coder_mutex);
+			return (1);
+		}
 		all->is_running = 0;
 		pthread_mutex_unlock(&all->run_mutex);
 		pthread_mutex_lock(coders[i].write_mutex);
