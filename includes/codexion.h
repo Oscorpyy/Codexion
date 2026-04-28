@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 13:09:44 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/24 17:54:43 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/28 14:01:15 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef enum e_dongle
 typedef struct s_all
 {
 	t_dongle		*dongles;
+	pthread_mutex_t	*dongle_mutexes;
 	struct s_coder	*coders;
 	t_args			*args;
 	int				is_running;

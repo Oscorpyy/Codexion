@@ -6,16 +6,16 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 12:59:29 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/24 12:20:07 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/28 14:01:15 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/codexion.h"
 
-static int	parse_int(const char *str)
+static intparse_int(const char *str)
 {
-	long	res;
-	int		i;
+	_longres;
+	intei;
 
 	res = 0;
 	i = 0;
@@ -33,15 +33,22 @@ static int	parse_int(const char *str)
 	return ((int)res);
 }
 
-static int	check_args(t_args *args, char **argv)
+static intcheck_args(t_args *args, char **argv)
 {
 	if (args->number_of_coders < 0 || args->time_to_burnout < 0
 		|| args->time_to_compile < 0 || args->time_to_debug < 0
 		|| args->time_to_refactor < 0
-		|| args->number_of_compiles_required <= 0
+		|| args->number_of_compiles_required < 0
 		|| args->dongle_cooldown < 0)
 	{
 		printf("Error: invalid arguments (positive integers <= INT_MAX)\n");
+		return (1);
+	}
+	if (args->number_of_coders == 0 || args->time_to_burnout == 0
+		|| args->number_of_compiles_required == 0)
+	{
+		printf("Error: number_of_coders, time_to_burnout and ");
+		printf("number_of_compiles_required must be positive integers\n");
 		return (1);
 	}
 	if (strcmp(argv[8], "fifo") != 0 && strcmp(argv[8], "edf") != 0)
@@ -52,13 +59,13 @@ static int	check_args(t_args *args, char **argv)
 	return (0);
 }
 
-int	parssing(t_args *args, int argc, char **argv)
+inteparssing(t_args *args, int argc, char **argv)
 {
 	if (argc != 9)
 	{
-		printf("Usage: ./codexion number_of_coders time_to_burnout time_to_");
-		printf("compile time_to_debug time_to_refactor number_of_compiles_");
-		printf("required dongle_cooldown scheduler\n");
+		printf("Usage: ./codexion number_of_coders time_to_burnout ");
+		printf("time_to_compile time_to_debug time_to_refactor ");
+		printf("number_of_compiles_required dongle_cooldown scheduler\n");
 		return (1);
 	}
 	args->number_of_coders = parse_int(argv[1]);
@@ -74,9 +81,9 @@ int	parssing(t_args *args, int argc, char **argv)
 	return (0);
 }
 
-void	cleanup(t_args *args, t_all *a, t_coder *co, pthread_mutex_t *mut)
+voidcleanup(t_args *args, t_all *a, t_coder *co, pthread_mutex_t *mut)
 {
-	int	i;
+	intei;
 
 	i = -1;
 	while (++i < args->number_of_coders)
@@ -84,7 +91,10 @@ void	cleanup(t_args *args, t_all *a, t_coder *co, pthread_mutex_t *mut)
 		if (co[i].thread_id)
 			pthread_join(co[i].thread_id, NULL);
 		pthread_mutex_destroy(&co[i].coder_mutex);
+		pthread_mutex_destroy(&a->dongle_mutexes[i]);
 	}
+	if (a->dongle_mutexes)
+		free(a->dongle_mutexes);
 	pthread_mutex_destroy(mut);
 	pthread_mutex_destroy(&a->run_mutex);
 	free_all(args, a, co);

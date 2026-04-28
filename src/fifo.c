@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/24 10:00:00 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/24 17:54:43 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/28 14:01:15 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,29 @@ void	print_state(t_coder *coder, char *state);
 
 void	acquire_dongles_fifo(t_all *all, t_coder *coder)
 {
+	int left = coder->id - 1;
+	int right = coder->id % all->args->number_of_coders;
+
 	while (check_running(all))
 	{
+		pthread_mutex_lock(&all->dongle_mutexes[left]);
 		print_state(coder, "has taken a dongle");
+		if (all->args->number_of_coders == 1)
+		{
+			ft_usleep(all->args->time_to_burnout + 10, coder);
+			pthread_mutex_unlock(&all->dongle_mutexes[left]);
+			break;
+		}
+		pthread_mutex_lock(&all->dongle_mutexes[right]);
 		print_state(coder, "has taken a dongle");
 		print_state(coder, "is compiling");
 		pthread_mutex_lock(&coder->coder_mutex);
 		coder->last_compile_time = get_time();
 		pthread_mutex_unlock(&coder->coder_mutex);
 		ft_usleep(all->args->time_to_compile, coder);
+		pthread_mutex_unlock(&all->dongle_mutexes[right]);
+		pthread_mutex_unlock(&all->dongle_mutexes[left]);
+		
 		pthread_mutex_lock(&coder->coder_mutex);
 		coder->compiles_done++;
 		pthread_mutex_unlock(&coder->coder_mutex);
@@ -39,8 +53,13 @@ void	acquire_dongles_fifo(t_all *all, t_coder *coder)
 		print_state(coder, "is refactoring");
 		ft_usleep(all->args->time_to_refactor, coder);
 		pthread_mutex_lock(&coder->coder_mutex);
-		if (check_burnout(all, all->coders, coder->id - 1, get_time()))
+		if (check_burnout(all, all->coders, left, get_time()))
+		{
+			pthread_mutex_unlock(&coder->coder_mutex);
 			break ;
+		}
 		pthread_mutex_unlock(&coder->coder_mutex);
+		
+		ft_usleep(all->args->dongle_cooldown, coder);
 	}
 }
