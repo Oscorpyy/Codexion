@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 13:09:44 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/28 14:01:15 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/28 19:07:02 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,9 @@ typedef struct s_all
 	int				is_running;
 	long			start_time;
 	pthread_mutex_t	run_mutex;
-}	t_all;
+    long            *dongle_cooldown_end;
+    pthread_mutex_t  cooldown_mutex;
+} t_all;
 
 typedef struct s_coder
 {
