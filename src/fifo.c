@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 15:16:10 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/29 15:16:12 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/29 18:58:45 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,12 @@ static int	do_cycle(t_all *a, t_coder *c)
 	ft_usleep(a->args->time_to_compile, c);
 	pthread_mutex_lock(&c->coder_mutex);
 	c->compiles_done++;
+	print_state(c, "is debugging");
+	ft_usleep(a->args->time_to_debug, c);
+	if (check_burnout(a, a->coders, c->id - 1, get_time()))
+		return (0);
+	print_state(c, "is refactoring");
+	ft_usleep(a->args->time_to_refactor, c);
 	if (a->args->number_of_compiles_required != -1
 		&& c->compiles_done >= a->args->number_of_compiles_required)
 	{
@@ -76,10 +82,6 @@ static int	do_cycle(t_all *a, t_coder *c)
 		return (0);
 	}
 	pthread_mutex_unlock(&c->coder_mutex);
-	print_state(c, "is debugging");
-	ft_usleep(a->args->time_to_debug, c);
-	print_state(c, "is refactoring");
-	ft_usleep(a->args->time_to_refactor, c);
 	return (1);
 }
 

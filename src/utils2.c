@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 16:19:16 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/29 16:19:55 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/29 18:10:12 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,10 @@ void	wait_for_dongle(t_all *all, int idx)
 				return ;
 		}
 		else
+		{
 			pthread_mutex_unlock(&all->cooldown_mutex);
-		usleep(100);
+		}
+		usleep(500);
 	}
 }
 

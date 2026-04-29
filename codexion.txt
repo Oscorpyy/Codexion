@@ -1,0 +1,30 @@
+0 1 has taken a dongle
+0 3 has taken a dongle
+0 5 has taken a dongle
+0 5 has taken a dongle
+0 5 is compiling
+0 7 has taken a dongle
+0 7 has taken a dongle
+0 7 is compiling
+0 4 has taken a dongle
+0 9 has taken a dongle
+0 9 has taken a dongle
+0 9 is compiling
+0 2 has taken a dongle
+52 4 has taken a dongle
+52 4 is compiling
+52 6 has taken a dongle
+52 6 has taken a dongle
+52 6 is compiling
+52 8 has taken a dongle
+52 8 has taken a dongle
+52 8 is compiling
+104 3 has taken a dongle
+104 3 is compiling
+156 2 has taken a dongle
+156 2 is compiling
+208 1 has taken a dongle
+208 1 is compiling
+260 10 has taken a dongle
+260 10 has taken a dongle
+260 10 is compiling
