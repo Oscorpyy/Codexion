@@ -5,21 +5,21 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/08 12:59:29 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/28 18:19:32 by opernod          ###   ########lyon.fr   */
+/*   Created: 2026/04/29 15:03:39 by opernod           #+#    #+#             */
+/*   Updated: 2026/04/29 15:03:41 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/codexion.h"
 
-static int parse_int(const char *str)
+static int	parse_int(const char *str)
 {
-	long res;
-	int i;
+	long	res;
+	int		i;
 
 	res = 0;
 	i = 0;
-	if (!str || !str[0])
+	if (!str || !str)
 		return (-1);
 	while (str[i])
 	{
@@ -33,7 +33,7 @@ static int parse_int(const char *str)
 	return ((int)res);
 }
 
-static int check_args(t_args *args, char **argv)
+static int	check_args(t_args *args, char **argv)
 {
 	if (args->number_of_coders < 0 || args->time_to_burnout < 0
 		|| args->time_to_compile < 0 || args->time_to_debug < 0
@@ -83,7 +83,7 @@ int	parssing(t_args *args, int argc, char **argv)
 
 void	cleanup(t_args *args, t_all *a, t_coder *co, pthread_mutex_t *mut)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (++i < args->number_of_coders)

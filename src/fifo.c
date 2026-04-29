@@ -3,44 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   fifo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opernod <opernod@student.42lyon.fr>         +#+  +:+       +#+        */
+/*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/24 10:00:00 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/28 20:00:00 by opernod          ###   ########.fr       */
+/*   Created: 2026/04/29 15:16:10 by opernod           #+#    #+#             */
+/*   Updated: 2026/04/29 15:16:12 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #define _XOPEN_SOURCE 500
 #include "../includes/codexion.h"
 
+/* Prototypes des fonctions externes */
 long	get_time(void);
 int		check_running(t_all *all);
 void	print_state(t_coder *coder, char *state);
-
-static void	wait_for_dongle(t_all *all, int idx)
-{
-	while (check_running(all))
-	{
-		if (get_time() >= all->dongle_cooldown_end[idx])
-			if (pthread_mutex_trylock(&all->dongle_mutexes[idx]) == 0)
-				return ;
-		usleep(100);
-	}
-}
-
-static void	release_dongle(t_all *all, int idx)
-{
-	pthread_mutex_unlock(&all->dongle_mutexes[idx]);
-	pthread_mutex_lock(&all->cooldown_mutex);
-	all->dongle_cooldown_end[idx] = get_time() + all->args->dongle_cooldown;
-	pthread_mutex_unlock(&all->cooldown_mutex);
-}
+void	wait_for_dongle(t_all *all, int idx);
+void	release_dongle(t_all *all, int idx);
+void	ft_usleep(long time, t_coder *coder);
+int		check_burnout(t_all *a, t_coder *c, int i, long t);
 
 static void	acquire_dongles(t_all *a, t_coder *c, int l, int r)
 {
-	int	first = (l < r) ? l : r;
-	int	second = (l < r) ? r : l;
+	int	first;
+	int	second;
 
+	first = l;
+	second = r;
+	if (l > r)
+	{
+		first = r;
+		second = l;
+	}
 	wait_for_dongle(a, first);
 	print_state(c, "has taken a dongle");
 	if (a->args->number_of_coders != 1)
@@ -52,9 +45,16 @@ static void	acquire_dongles(t_all *a, t_coder *c, int l, int r)
 
 static void	release_dongles(t_all *a, int l, int r)
 {
-	int	first = (l < r) ? l : r;
-	int	second = (l < r) ? r : l;
+	int	first;
+	int	second;
 
+	first = l;
+	second = r;
+	if (l > r)
+	{
+		first = r;
+		second = l;
+	}
 	if (a->args->number_of_coders != 1)
 		release_dongle(a, second);
 	release_dongle(a, first);
@@ -83,11 +83,25 @@ static int	do_cycle(t_all *a, t_coder *c)
 	return (1);
 }
 
+static int	check_coder_status(t_all *all, t_coder *coder, int l)
+{
+	pthread_mutex_lock(&coder->coder_mutex);
+	if (check_burnout(all, all->coders, l, get_time()))
+	{
+		pthread_mutex_unlock(&coder->coder_mutex);
+		return (1);
+	}
+	pthread_mutex_unlock(&coder->coder_mutex);
+	return (0);
+}
+
 void	acquire_dongles_fifo(t_all *all, t_coder *coder)
 {
-	int	l = coder->id - 1;
-	int	r = coder->id % all->args->number_of_coders;
+	int	l;
+	int	r;
 
+	l = coder->id - 1;
+	r = coder->id % all->args->number_of_coders;
 	while (check_running(all))
 	{
 		acquire_dongles(all, coder, l, r);
@@ -103,12 +117,7 @@ void	acquire_dongles_fifo(t_all *all, t_coder *coder)
 			break ;
 		}
 		release_dongles(all, l, r);
-		pthread_mutex_lock(&coder->coder_mutex);
-		if (check_burnout(all, all->coders, l, get_time()))
-		{
-			pthread_mutex_unlock(&coder->coder_mutex);
+		if (check_coder_status(all, coder, l))
 			break ;
-		}
-		pthread_mutex_unlock(&coder->coder_mutex);
 	}
 }

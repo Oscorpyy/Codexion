@@ -6,7 +6,7 @@
 #    By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/08 13:35:54 by opernod           #+#    #+#              #
-#    Updated: 2026/04/24 14:18:17 by opernod          ###   ########lyon.fr    #
+#    Updated: 2026/04/29 16:25:22 by opernod          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,15 @@ ARGS = 10 10 10 10 10 1 1 fifo
 valgrind_args = valgrind --leak-check=full --track-origins=yes
 helgrind_args = valgrind --tool=helgrind -s
 
-SRCS = $(wildcard $(SRC_DIR)/*.c)
+SRC_FILES = edf.c \
+            fifo.c \
+            ft_usleep.c \
+            main.c \
+            parssing.c \
+            utils2.c \
+            utils.c
+
+SRCS = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 DEPS = $(OBJS:.o=.d)
 

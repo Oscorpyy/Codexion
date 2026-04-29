@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 13:09:44 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/28 19:07:02 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/29 15:41:24 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,5 +73,7 @@ void	free_all(t_args *args, t_all *all, t_coder *coder);
 int		setup_mutex(pthread_mutex_t *m, t_all *all, t_args *args, t_coder *c);
 void	ft_usleep(long time_in_ms, t_coder *coder);
 int		check_burnout(t_all *all, t_coder *co, int i, long current);
+void	wait_for_dongle(t_all *all, int idx);
+void	release_dongle(t_all *all, int idx);
 
 #endif
