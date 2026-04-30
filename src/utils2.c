@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 16:19:16 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/30 15:49:27 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/30 16:32:29 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	release_dongle(t_all *all, int idx, int *flag)
 	{
 		*flag = 0;
 		pthread_mutex_unlock(&all->dongle_mutexes[idx]);
+		
 		pthread_mutex_lock(&all->cooldown_mutex);
 		all->dongle_cooldown_end[idx] = get_time() + all->args->dongle_cooldown;
 		pthread_mutex_unlock(&all->cooldown_mutex);

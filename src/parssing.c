@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 15:03:39 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/30 15:53:07 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/30 16:31:57 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,11 +100,10 @@ void	cleanup(t_args *args, t_all *a, t_coder *co, pthread_mutex_t *mut)
 		pthread_mutex_destroy(&co[i].coder_mutex);
 		pthread_mutex_destroy(&a->dongle_mutexes[i]);
 	}
-	if (a->dongle_mutexes)
-		free(a->dongle_mutexes);
+	pthread_mutex_destroy(&a->cooldown_mutex);
 	pthread_mutex_destroy(mut);
 	pthread_mutex_destroy(&a->run_mutex);
-	if (a->dongle_cooldown_end)
-		free(a->dongle_cooldown_end);
+	free(a->dongle_mutexes);
+	free(a->dongle_cooldown_end);
 	free_all(args, a, co);
 }
