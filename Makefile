@@ -6,7 +6,7 @@
 #    By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/08 13:35:54 by opernod           #+#    #+#              #
-#    Updated: 2026/04/30 18:23:16 by opernod          ###   ########lyon.fr    #
+#    Updated: 2026/04/30 18:39:32 by opernod          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -78,6 +78,8 @@ clean:
 fclean: clean
 	@rm -f $(NAME)
 	@echo "$(COLOR_RED)Executable removed.$(COLOR_RESET)"
+	@rm -f log_val.txt log_hel.txt
+	@echo "$(COLOR_RED)Logs removed.$(COLOR_RESET)"
 
 re: fclean all
 
