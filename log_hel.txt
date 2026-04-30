@@ -1,0 +1,169 @@
+==983378== Helgrind, a thread error detector
+==983378== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==983378== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==983378== Command: ./codexion 5 800 200 200 200 5 10 edf
+==983378== 
+==983378== 
+==983378== Use --history-level=approx or =none to gain increased speed, at
+==983378== the cost of reduced accuracy of conflicting-access information
+==983378== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 162321 from 123)
+--983378-- 
+--983378-- used_suppression: 162321 helgrind-glibc2X-005 /usr/libexec/valgrind/default.supp:947
+==983378== 
+==983378== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 162321 from 123)
+==983523== Helgrind, a thread error detector
+==983523== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==983523== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==983523== Command: ./codexion 60 1000 200 100 100 5 200 fifo
+==983523== 
+==983523== 
+==983523== Use --history-level=approx or =none to gain increased speed, at
+==983523== the cost of reduced accuracy of conflicting-access information
+==983523== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 83807 from 164)
+--983523-- 
+--983523-- used_suppression:  83807 helgrind-glibc2X-005 /usr/libexec/valgrind/default.supp:947
+==983523== 
+==983523== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 83807 from 164)
+==983612== Helgrind, a thread error detector
+==983612== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==983612== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==983612== Command: ./codexion 199 1 0 0 0 8 1 edf
+==983612== 
+==983612== 
+==983612== Use --history-level=approx or =none to gain increased speed, at
+==983612== the cost of reduced accuracy of conflicting-access information
+==983612== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 1396 from 17)
+--983612-- 
+--983612-- used_suppression:   1396 helgrind-glibc2X-005 /usr/libexec/valgrind/default.supp:947
+==983612== 
+==983612== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 1396 from 17)
+==983814== Helgrind, a thread error detector
+==983814== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==983814== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==983814== Command: ./codexion 20 1 1 1 0 12 0 edf
+==983814== 
+==983814== 
+==983814== Use --history-level=approx or =none to gain increased speed, at
+==983814== the cost of reduced accuracy of conflicting-access information
+==983814== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 379 from 115)
+--983814-- 
+--983814-- used_suppression:    379 helgrind-glibc2X-005 /usr/libexec/valgrind/default.supp:947
+==983814== 
+==983814== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 379 from 115)
+==983845== Helgrind, a thread error detector
+==983845== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==983845== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==983845== Command: ./codexion 200 1000000 1 1 0 12 10 fifo
+==983845== 
+==983845== 
+==983845== Use --history-level=approx or =none to gain increased speed, at
+==983845== the cost of reduced accuracy of conflicting-access information
+==983845== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 9092496 from 152)
+--983845-- 
+--983845-- used_suppression: 9092496 helgrind-glibc2X-005 /usr/libexec/valgrind/default.supp:947
+==983845== 
+==983845== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 9092496 from 152)
+==988072== Helgrind, a thread error detector
+==988072== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==988072== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==988072== Command: ./codexion 200 1000000 1 1 0 4 10 fifo
+==988072== 
+==988072== 
+==988072== Use --history-level=approx or =none to gain increased speed, at
+==988072== the cost of reduced accuracy of conflicting-access information
+==988072== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 3006127 from 152)
+--988072-- 
+--988072-- used_suppression: 3006127 helgrind-glibc2X-005 /usr/libexec/valgrind/default.supp:947
+==988072== 
+==988072== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 3006127 from 152)
+==989130== Helgrind, a thread error detector
+==989130== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==989130== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==989130== Command: ./codexion 1 800 200 200 200 5 0 fifo
+==989130== 
+==989130== 
+==989130== Use --history-level=approx or =none to gain increased speed, at
+==989130== the cost of reduced accuracy of conflicting-access information
+==989130== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 39689 from 28)
+--989130-- 
+--989130-- used_suppression:  39689 helgrind-glibc2X-005 /usr/libexec/valgrind/default.supp:947
+==989130== 
+==989130== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 39689 from 28)
+==989158== Helgrind, a thread error detector
+==989158== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==989158== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==989158== Command: ./codexion 2 200 500 100 100 5 0 fifo
+==989158== 
+==989158== 
+==989158== Use --history-level=approx or =none to gain increased speed, at
+==989158== the cost of reduced accuracy of conflicting-access information
+==989158== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 9784 from 52)
+--989158-- 
+--989158-- used_suppression:   9784 helgrind-glibc2X-005 /usr/libexec/valgrind/default.supp:947
+==989158== 
+==989158== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 9784 from 52)
+==989170== Helgrind, a thread error detector
+==989170== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==989170== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==989170== Command: ./codexion 2 500 200 50 50 5 400 fifo
+==989170== 
+==989170== 
+==989170== Use --history-level=approx or =none to gain increased speed, at
+==989170== the cost of reduced accuracy of conflicting-access information
+==989170== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 26279 from 98)
+--989170-- 
+--989170-- used_suppression:  26279 helgrind-glibc2X-005 /usr/libexec/valgrind/default.supp:947
+==989170== 
+==989170== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 26279 from 98)
+==989192== Helgrind, a thread error detector
+==989192== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==989192== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==989192== Command: ./codexion 3 100 50 50 50 10 0 fifo
+==989192== 
+==989192== 
+==989192== Use --history-level=approx or =none to gain increased speed, at
+==989192== the cost of reduced accuracy of conflicting-access information
+==989192== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 5197 from 106)
+--989192-- 
+--989192-- used_suppression:   5197 helgrind-glibc2X-005 /usr/libexec/valgrind/default.supp:947
+==989192== 
+==989192== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 5197 from 106)
+==989201== Helgrind, a thread error detector
+==989201== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==989201== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==989201== Command: ./codexion 4 1000 200 100 100 5 0 fifo
+==989201== 
+==989201== 
+==989201== Use --history-level=approx or =none to gain increased speed, at
+==989201== the cost of reduced accuracy of conflicting-access information
+==989201== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 96307 from 137)
+--989201-- 
+--989201-- used_suppression:  96307 helgrind-glibc2X-005 /usr/libexec/valgrind/default.supp:947
+==989201== 
+==989201== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 96307 from 137)
+==989254== Helgrind, a thread error detector
+==989254== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==989254== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==989254== Command: ./codexion 2 800 200 100 100 3 0 fifo
+==989254== 
+==989254== 
+==989254== Use --history-level=approx or =none to gain increased speed, at
+==989254== the cost of reduced accuracy of conflicting-access information
+==989254== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 26877 from 84)
+--989254-- 
+--989254-- used_suppression:  26877 helgrind-glibc2X-005 /usr/libexec/valgrind/default.supp:947
+==989254== 
+==989254== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 26877 from 84)
+==989413== Helgrind, a thread error detector
+==989413== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==989413== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==989413== Command: ./codexion 2 1000 200 100 100 10 0 fifo
+==989413== 
+==989413== 
+==989413== Use --history-level=approx or =none to gain increased speed, at
+==989413== the cost of reduced accuracy of conflicting-access information
+==989413== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 83384 from 95)
+--989413-- 
+--989413-- used_suppression:  83384 helgrind-glibc2X-005 /usr/libexec/valgrind/default.supp:947
+==989413== 
+==989413== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 83384 from 95)

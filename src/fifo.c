@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 15:16:10 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/30 16:03:19 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/30 17:40:22 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,6 @@ void	ft_usleep(long time, t_coder *coder);
 int		check_burnout(t_all *a, t_coder *c, int i, long t);
 void	wait_for_dongle(t_all *all, int idx, int *flag);
 void	release_dongle(t_all *all, int idx, int *flag);
-
-static void	acquire_dongles(t_all *a, t_coder *c, int l, int r)
-{
-	t_order	o;
-
-	set_order(c, l, r, &o);
-	wait_for_dongle(a, o.first, o.f_flag);
-	print_state(c, "has taken a dongle");
-	if (a->args->number_of_coders != 1)
-	{
-		wait_for_dongle(a, o.second, o.s_flag);
-		print_state(c, "has taken a dongle");
-	}
-}
 
 static void	release_dongles(t_all *a, t_coder *c, int l, int r)
 {
@@ -77,11 +63,36 @@ static int	check_coder_status(t_all *all, t_coder *coder, int l)
 	pthread_mutex_lock(&coder->coder_mutex);
 	if (check_burnout(all, all->coders, l, get_time()))
 	{
-		pthread_mutex_unlock(&coder->coder_mutex);
 		return (1);
 	}
 	pthread_mutex_unlock(&coder->coder_mutex);
 	return (0);
+}
+
+static int	acquire_dongles(t_all *a, t_coder *c, int l, int r)
+{
+	t_order	o;
+
+	set_order(c, l, r, &o);
+	wait_for_dongle(a, o.first, o.f_flag);
+	if (!check_running(a))
+	{
+		release_dongle(a, o.first, o.f_flag);
+		return (0);
+	}
+	print_state(c, "has taken a dongle");
+	if (a->args->number_of_coders != 1)
+	{
+		wait_for_dongle(a, o.second, o.s_flag);
+		if (!check_running(a))
+		{
+			release_dongle(a, o.second, o.s_flag);
+			release_dongle(a, o.first, o.f_flag);
+			return (0);
+		}
+		print_state(c, "has taken a dongle");
+	}
+	return (1);
 }
 
 void	acquire_dongles_fifo(t_all *all, t_coder *coder)
@@ -93,7 +104,8 @@ void	acquire_dongles_fifo(t_all *all, t_coder *coder)
 	r = coder->id % all->args->number_of_coders;
 	while (check_running(all))
 	{
-		acquire_dongles(all, coder, l, r);
+		if (!acquire_dongles(all, coder, l, r))
+			break ;
 		if (all->args->number_of_coders == 1)
 		{
 			ft_usleep(all->args->time_to_burnout + 10, coder);

@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 16:18:07 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/30 16:07:01 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/30 17:37:51 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,10 +109,7 @@ void	acquire_dongles_edf(t_all *all, t_coder *coder)
 			break ;
 		pthread_mutex_lock(&coder->coder_mutex);
 		if (check_burnout(all, all->coders, left, get_time()))
-		{
-			pthread_mutex_unlock(&coder->coder_mutex);
 			break ;
-		}
 		pthread_mutex_unlock(&coder->coder_mutex);
 	}
 }

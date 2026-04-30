@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 13:09:44 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/30 16:03:10 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/30 16:56:47 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef struct s_all
 	pthread_mutex_t	run_mutex;
 	long			*dongle_cooldown_end;
 	pthread_mutex_t	cooldown_mutex;
-} t_all;
+}	t_all;
 
 typedef struct s_coder
 {
@@ -69,8 +69,8 @@ typedef struct s_coder
 	long			last_compile_time;
 	int				compiles_done;
 	pthread_mutex_t	coder_mutex;
-	pthread_mutex_t *left_dongle;
-	pthread_mutex_t *right_dongle;
+	pthread_mutex_t	*left_dongle;
+	pthread_mutex_t	*right_dongle;
 	int				has_left;
 	int				has_right;
 }	t_coder;

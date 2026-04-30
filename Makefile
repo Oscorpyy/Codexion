@@ -6,7 +6,7 @@
 #    By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/08 13:35:54 by opernod           #+#    #+#              #
-#    Updated: 2026/04/29 16:25:22 by opernod          ###   ########lyon.fr    #
+#    Updated: 2026/04/30 16:56:27 by opernod          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -std=c89 -pthread -MMD -MP
 
 SRC_DIR = src
-OBJ_DIR = obj
+OBJ_DIR = .obj
 ARGS = 10 10 10 10 10 1 1 fifo
 valgrind_args = valgrind --leak-check=full --track-origins=yes
 helgrind_args = valgrind --tool=helgrind -s
@@ -110,18 +110,49 @@ define RUN_TESTS
 	@echo "Press Enter to run : $(1) 2 1000 200 100 100 10 0 fifo"; read dummy; $(1) 2 1000 200 100 100 10 0 fifo || true
 endef
 
+define RUN_TESTS_AUTO
+	@rm -f $(2)
+	@echo "\033[34mBasic tests :\033[0m"
+	@echo "Running : $(1) 5 800 200 200 200 5 10 edf"; $(1) 5 800 200 200 200 5 10 edf 2>>$(2) || true
+	@echo "\033[34mBasic tests :\033[0m"
+	@echo "Running : $(1) 60 1000 200 100 100 5 200 fifo"; $(1) 60 1000 200 100 100 5 200 fifo 2>>$(2) || true
+	@echo ""; echo "\033[34mStress tests :\033[0m"
+	@echo "Running : $(1) 199 1 0 0 0 8 1 edf"; $(1) 199 1 0 0 0 8 1 edf 2>>$(2) || true
+	@echo ""; echo "\033[34mStress tests :\033[0m"
+	@echo "Running : $(1) 20 1 1 1 0 12 0 edf"; $(1) 20 1 1 1 0 12 0 edf 2>>$(2) || true
+	@echo ""; echo "\033[34mStress tests :\033[0m"
+	@echo "Running : $(1) 200 1000000 1 1 0 12 10 fifo"; $(1) 200 1000000 1 1 0 12 10 fifo 2>>$(2) || true
+	@echo ""; echo "\033[34mStress tests :\033[0m"
+	@echo "Running : $(1) 200 1000000 1 1 0 4 10 fifo"; $(1) 200 1000000 1 1 0 4 10 fifo 2>>$(2) || true
+	@echo ""; echo "\033[34mBurnout for sure :\033[0m"
+	@echo "Running : $(1) 1 800 200 200 200 5 0 fifo"; $(1) 1 800 200 200 200 5 0 fifo 2>>$(2) || true
+	@echo ""; echo "\033[34mBurnout for sure :\033[0m"
+	@echo "Running : $(1) 2 200 500 100 100 5 0 fifo"; $(1) 2 200 500 100 100 5 0 fifo 2>>$(2) || true
+	@echo ""; echo "\033[34mBurnout for sure :\033[0m"
+	@echo "Running : $(1) 2 500 200 50 50 5 400 fifo"; $(1) 2 500 200 50 50 5 400 fifo 2>>$(2) || true
+	@echo ""; echo "\033[34mBurnout for sure :\033[0m"
+	@echo "Running : $(1) 3 100 50 50 50 10 0 fifo"; $(1) 3 100 50 50 50 10 0 fifo 2>>$(2) || true
+	@echo ""; echo "\033[34mNormal termination :\033[0m"
+	@echo "Running : $(1) 4 1000 200 100 100 5 0 fifo"; $(1) 4 1000 200 100 100 5 0 fifo 2>>$(2) || true
+	@echo ""; echo "\033[34mNormal termination :\033[0m"
+	@echo "Running : $(1) 2 800 200 100 100 3 0 fifo"; $(1) 2 800 200 100 100 3 0 fifo 2>>$(2) || true
+	@echo ""; echo "\033[34mTimestamp :\033[0m"
+	@echo "Running : $(1) 2 1000 200 100 100 10 0 fifo"; $(1) 2 1000 200 100 100 10 0 fifo 2>>$(2) || true
+	@echo "$(COLOR_GREEN)Logs saved in $(2)$(COLOR_RESET)"
+endef
+
 test: all
 	$(call RUN_TESTS,./$(NAME))
 
 test_val: all
-	$(call RUN_TESTS,$(valgrind_args) ./$(NAME))
+	$(call RUN_TESTS_AUTO,$(valgrind_args) ./$(NAME),log_val.txt)
 
 test_hell: all
-	$(call RUN_TESTS,$(helgrind_args) ./$(NAME))
+	$(call RUN_TESTS_AUTO,$(helgrind_args) ./$(NAME),log_hel.txt)
 
 lint:
 	@echo "$(COLOR_BLUE)Running norminette...$(COLOR_RESET)"
-	@norminette -R CheckForbiddenSourceHeader $(SRCS) $(SRC_DIR) 2>&1 | grep -v "OK" | awk 'NR==1{first=$$0} NR>1{print} END{if(NR<=1) print "\033[34m[\033[37mOK\033[31m]\033[0m"}'
+	@norminette -R CheckForbiddenSourceHeader . 2>&1 | grep -v "OK" | awk 'NR==1{first=$$0} NR>1{print} END{if(NR<=1) print "\033[34m[\033[37mOK\033[31m]\033[0m"}'
 	@echo "$(COLOR_BLUE)Norminette check completed.$(COLOR_RESET)"
 
 .PHONY: all clean fclean re run test test_val test_hell valgrind helgrind lint
