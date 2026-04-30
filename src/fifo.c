@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 15:16:10 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/30 12:28:33 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/30 16:03:19 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,47 +17,33 @@
 long	get_time(void);
 int		check_running(t_all *all);
 void	print_state(t_coder *coder, char *state);
-void	wait_for_dongle(t_all *all, int idx);
-void	release_dongle(t_all *all, int idx);
 void	ft_usleep(long time, t_coder *coder);
 int		check_burnout(t_all *a, t_coder *c, int i, long t);
+void	wait_for_dongle(t_all *all, int idx, int *flag);
+void	release_dongle(t_all *all, int idx, int *flag);
 
 static void	acquire_dongles(t_all *a, t_coder *c, int l, int r)
 {
-	int	first;
-	int	second;
+	t_order	o;
 
-	first = l;
-	second = r;
-	if (l > r)
-	{
-		first = r;
-		second = l;
-	}
-	wait_for_dongle(a, first);
+	set_order(c, l, r, &o);
+	wait_for_dongle(a, o.first, o.f_flag);
 	print_state(c, "has taken a dongle");
 	if (a->args->number_of_coders != 1)
 	{
-		wait_for_dongle(a, second);
+		wait_for_dongle(a, o.second, o.s_flag);
 		print_state(c, "has taken a dongle");
 	}
 }
 
-static void	release_dongles(t_all *a, int l, int r)
+static void	release_dongles(t_all *a, t_coder *c, int l, int r)
 {
-	int	first;
-	int	second;
+	t_order	o;
 
-	first = l;
-	second = r;
-	if (l > r)
-	{
-		first = r;
-		second = l;
-	}
+	set_order(c, l, r, &o);
 	if (a->args->number_of_coders != 1)
-		release_dongle(a, second);
-	release_dongle(a, first);
+		release_dongle(a, o.second, o.s_flag);
+	release_dongle(a, o.first, o.f_flag);
 }
 
 static int	do_cycle(t_all *a, t_coder *c, int l, int r)
@@ -67,7 +53,7 @@ static int	do_cycle(t_all *a, t_coder *c, int l, int r)
 	c->last_compile_time = get_time();
 	pthread_mutex_unlock(&c->coder_mutex);
 	ft_usleep(a->args->time_to_compile, c);
-	release_dongles(a, l, r);
+	release_dongles(a, c, l, r);
 	pthread_mutex_lock(&c->coder_mutex);
 	c->compiles_done++;
 	print_state(c, "is debugging");
@@ -111,7 +97,7 @@ void	acquire_dongles_fifo(t_all *all, t_coder *coder)
 		if (all->args->number_of_coders == 1)
 		{
 			ft_usleep(all->args->time_to_burnout + 10, coder);
-			release_dongles(all, l, r);
+			release_dongles(all, coder, l, r);
 			break ;
 		}
 		if (!do_cycle(all, coder, l, r))

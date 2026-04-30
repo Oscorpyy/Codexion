@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 13:09:44 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/30 12:45:42 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/30 16:03:10 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,14 @@
 # include <pthread.h>
 # include <sys/time.h>
 # include <unistd.h>
+
+typedef struct s_order
+{
+	int	first;
+	int	second;
+	int	*f_flag;
+	int	*s_flag;
+}	t_order;
 
 typedef struct s_args
 {
@@ -48,8 +56,8 @@ typedef struct s_all
 	int				is_running;
 	long			start_time;
 	pthread_mutex_t	run_mutex;
-    long            *dongle_cooldown_end;
-    pthread_mutex_t  cooldown_mutex;
+	long			*dongle_cooldown_end;
+	pthread_mutex_t	cooldown_mutex;
 } t_all;
 
 typedef struct s_coder
@@ -61,6 +69,10 @@ typedef struct s_coder
 	long			last_compile_time;
 	int				compiles_done;
 	pthread_mutex_t	coder_mutex;
+	pthread_mutex_t *left_dongle;
+	pthread_mutex_t *right_dongle;
+	int				has_left;
+	int				has_right;
 }	t_coder;
 
 int		parssing(t_args *args, int argc, char **argv);
@@ -73,8 +85,9 @@ void	free_all(t_args *args, t_all *all, t_coder *coder);
 int		setup_mutex(pthread_mutex_t *m, t_all *all, t_args *args, t_coder *c);
 void	ft_usleep(long time_in_ms, t_coder *coder);
 int		check_burnout(t_all *all, t_coder *co, int i, long current);
-void	wait_for_dongle(t_all *all, int idx);
-void	release_dongle(t_all *all, int idx);
+void	wait_for_dongle(t_all *all, int idx, int *flag);
+void	release_dongle(t_all *all, int idx, int *flag);
 void	*coder_routine(void *arg);
+void	set_order(t_coder *c, int l, int r, t_order *o);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 14:52:57 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/29 18:43:54 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/30 15:51:47 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ static int	init_dongles(t_all *all, t_args *arg)
 {
 	int	i;
 
-	all->dongle_mutexes = malloc(sizeof(pthread_mutex_t)
-			* arg->number_of_coders);
+	all->dongle_mutexes = calloc(arg->number_of_coders,
+			sizeof(pthread_mutex_t));
 	all->dongle_cooldown_end = calloc(arg->number_of_coders, sizeof(long));
 	if (!all->dongle_mutexes || !all->dongle_cooldown_end
 		|| pthread_mutex_init(&all->cooldown_mutex, NULL) != 0)
@@ -57,6 +57,13 @@ static int	init_dongles(t_all *all, t_args *arg)
 	i = -1;
 	while (++i < arg->number_of_coders)
 		pthread_mutex_init(&all->dongle_mutexes[i], NULL);
+	if (!all->dongle_mutexes || !all->dongle_cooldown_end)
+	{
+		free(all->dongle_mutexes);
+		free(all->dongle_cooldown_end);
+		pthread_mutex_destroy(&all->cooldown_mutex);
+		return (1);
+	}
 	return (0);
 }
 
