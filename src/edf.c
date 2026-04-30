@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 16:18:07 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/29 18:58:39 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/30 12:38:51 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,10 @@ static int	compile_cycle(t_all *a, t_coder *c, int l, int r)
 	ft_usleep(a->args->time_to_refactor, c);
 	if (a->args->number_of_compiles_required != -1
 		&& c->compiles_done >= a->args->number_of_compiles_required)
-		{
-			pthread_mutex_unlock(&c->coder_mutex);
-			return (0);
-		}
+	{
+		pthread_mutex_unlock(&c->coder_mutex);
+		return (0);
+	}
 	pthread_mutex_unlock(&c->coder_mutex);
 	return (1);
 }

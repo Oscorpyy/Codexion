@@ -6,24 +6,12 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 12:59:33 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/29 13:43:53 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/30 12:44:59 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #define _XOPEN_SOURCE 500
 #include "../includes/codexion.h"
-
-void	*coder_routine(void *arg)
-{
-	t_coder	*coder;
-
-	coder = (t_coder *)arg;
-	if (strcmp(coder->all->args->scheduler, "fifo") == 0)
-		acquire_dongles_fifo(coder->all, coder);
-	else
-		acquire_dongles_edf(coder->all, coder);
-	return (NULL);
-}
 
 int	init_threads(pthread_mutex_t *mut, t_coder *c, t_all *all)
 {
@@ -72,9 +60,25 @@ int	check_burnout(t_all *all, t_coder *coders, int i, long current_time)
 	return (0);
 }
 
+static int	check_single_coder(t_all *all, t_coder *c, int i)
+{
+	pthread_mutex_lock(&c[i].coder_mutex);
+	if (all->args->number_of_compiles_required != -1
+		&& c[i].compiles_done >= all->args->number_of_compiles_required)
+	{
+		pthread_mutex_unlock(&c[i].coder_mutex);
+		return (1);
+	}
+	if (check_burnout(all, c, i, get_time()))
+		return (-1);
+	pthread_mutex_unlock(&c[i].coder_mutex);
+	return (0);
+}
+
 void	monitor_routine(t_all *all, t_coder *coders, int all_c)
 {
 	int	i;
+	int	res;
 
 	while (check_running(all) && usleep(50) == 0)
 	{
@@ -82,14 +86,11 @@ void	monitor_routine(t_all *all, t_coder *coders, int all_c)
 		all_c = 1;
 		while (++i < all->args->number_of_coders)
 		{
-			pthread_mutex_lock(&coders[i].coder_mutex);
-			if (check_burnout(all, coders, i, get_time()))
+			res = check_single_coder(all, coders, i);
+			if (res == -1)
 				return ;
-			if (all->args->number_of_compiles_required == -1
-				|| coders[i].compiles_done
-				< all->args->number_of_compiles_required)
+			if (res == 0)
 				all_c = 0;
-			pthread_mutex_unlock(&coders[i].coder_mutex);
 		}
 		if (all->args->number_of_compiles_required != -1 && all_c)
 		{

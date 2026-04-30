@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 15:16:10 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/29 18:58:45 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/04/30 12:28:33 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,14 @@ static void	release_dongles(t_all *a, int l, int r)
 	release_dongle(a, first);
 }
 
-static int	do_cycle(t_all *a, t_coder *c)
+static int	do_cycle(t_all *a, t_coder *c, int l, int r)
 {
 	print_state(c, "is compiling");
 	pthread_mutex_lock(&c->coder_mutex);
 	c->last_compile_time = get_time();
 	pthread_mutex_unlock(&c->coder_mutex);
 	ft_usleep(a->args->time_to_compile, c);
+	release_dongles(a, l, r);
 	pthread_mutex_lock(&c->coder_mutex);
 	c->compiles_done++;
 	print_state(c, "is debugging");
@@ -113,12 +114,8 @@ void	acquire_dongles_fifo(t_all *all, t_coder *coder)
 			release_dongles(all, l, r);
 			break ;
 		}
-		if (!do_cycle(all, coder))
-		{
-			release_dongles(all, l, r);
+		if (!do_cycle(all, coder, l, r))
 			break ;
-		}
-		release_dongles(all, l, r);
 		if (check_coder_status(all, coder, l))
 			break ;
 	}
