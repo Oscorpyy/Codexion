@@ -6,7 +6,7 @@
 #    By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/08 13:35:54 by opernod           #+#    #+#              #
-#    Updated: 2026/04/30 16:56:27 by opernod          ###   ########lyon.fr    #
+#    Updated: 2026/04/30 18:23:16 by opernod          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -81,6 +81,12 @@ fclean: clean
 
 re: fclean all
 
+lint:
+	@echo "$(COLOR_BLUE)Running norminette...$(COLOR_RESET)"
+	@norminette -R CheckForbiddenSourceHeader . 2>&1 | grep -v "OK" | awk 'NR==1{first=$$0} NR>1{print} END{if(NR<=1) print "\033[34m[\033[37mOK\033[31m]\033[0m"}'
+	@echo "$(COLOR_BLUE)Norminette check completed.$(COLOR_RESET)"
+
+
 define RUN_TESTS
 	@echo "\033[34mBasic tests :\033[0m"
 	@echo "Press Enter to run : $(1) 5 800 200 200 200 5 10 edf"; read dummy; $(1) 5 800 200 200 200 5 10 edf || true
@@ -141,7 +147,7 @@ define RUN_TESTS_AUTO
 	@echo "$(COLOR_GREEN)Logs saved in $(2)$(COLOR_RESET)"
 endef
 
-test: all
+tester: all
 	$(call RUN_TESTS,./$(NAME))
 
 test_val: all
@@ -150,9 +156,15 @@ test_val: all
 test_hell: all
 	$(call RUN_TESTS_AUTO,$(helgrind_args) ./$(NAME),log_hel.txt)
 
-lint:
-	@echo "$(COLOR_BLUE)Running norminette...$(COLOR_RESET)"
-	@norminette -R CheckForbiddenSourceHeader . 2>&1 | grep -v "OK" | awk 'NR==1{first=$$0} NR>1{print} END{if(NR<=1) print "\033[34m[\033[37mOK\033[31m]\033[0m"}'
-	@echo "$(COLOR_BLUE)Norminette check completed.$(COLOR_RESET)"
+test: all
+	@echo "$(COLOR_BLUE)Running tests and saving results...$(COLOR_RESET)"
+
+	@make test_hell > log_hel.txt 2>&1 || echo "$(COLOR_RED)Helgrind failed$(COLOR_RESET)"
+	@make test_val  > log_val.txt 2>&1 || echo "$(COLOR_RED)Valgrind failed$(COLOR_RESET)"
+
+	@echo "$(COLOR_GREEN)All tests completed. Logs saved in log_val.txt and log_hel.txt$(COLOR_RESET)"
+
+	@echo "$(COLOR_BLUE)Running tests checker...$(COLOR_RESET)"
+	@check_valhell .
 
 .PHONY: all clean fclean re run test test_val test_hell valgrind helgrind lint
