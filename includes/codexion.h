@@ -5,89 +5,92 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/08 13:09:44 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/30 16:56:47 by opernod          ###   ########lyon.fr   */
+/*   Created: 2026/01/19 11:11:33 by opernod           #+#    #+#             */
+/*   Updated: 2026/05/01 13:21:41 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CODEXION_H
 # define CODEXION_H
-
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
+# include "stdlib.h"
 # include <pthread.h>
+# include <stdio.h>
 # include <sys/time.h>
 # include <unistd.h>
+# include <limits.h>
+# include <string.h>
 
-typedef struct s_order
+typedef enum e_schedule
 {
-	int	first;
-	int	second;
-	int	*f_flag;
-	int	*s_flag;
-}	t_order;
+	FIFO,
+	EDF
+}				t_schedule;
 
 typedef struct s_args
 {
-	int		number_of_coders;
-	int		time_to_burnout;
-	int		time_to_compile;
-	int		time_to_debug;
-	int		time_to_refactor;
-	int		number_of_compiles_required;
-	int		dongle_cooldown;
-	char	*scheduler;
-}	t_args;
+	int			nb_coders;
+	int			time_burnout;
+	int			time_compile;
+	int			time_debug;
+	int			time_refactor;
+	int			nb_compiles_required;
+	int			dongle_cooldown;
+	t_schedule	scheduler;
+}				t_args;
 
-typedef enum e_dongle
-{
-	DONGLE_AVAILABLE,
-	DONGLE_IN_USE,
-	DONGLE_COOLDOWN
-}	t_dongle;
+typedef struct s_coder	t_coder;
+typedef struct s_dongle	t_dongle;
+typedef struct s_data	t_data;
 
-typedef struct s_all
+typedef struct s_data
 {
-	t_dongle		*dongles;
-	pthread_mutex_t	*dongle_mutexes;
-	struct s_coder	*coders;
-	t_args			*args;
-	int				is_running;
-	long			start_time;
-	pthread_mutex_t	run_mutex;
-	long			*dongle_cooldown_end;
-	pthread_mutex_t	cooldown_mutex;
-}	t_all;
+	pthread_t			monitor_thread;
+	t_args				args;
+	t_dongle			*all_dongles;
+	t_coder				*all_coders;
+	long				time_at_start;
+	int					simulation_running;
+	pthread_mutex_t		sim_mutex;
+	pthread_mutex_t		print_mutex;
+	int					started_threads;
+}						t_data;
 
 typedef struct s_coder
 {
-	int				id;
-	pthread_t		thread_id;
-	pthread_mutex_t	*write_mutex;
-	t_all			*all;
-	long			last_compile_time;
-	int				compiles_done;
-	pthread_mutex_t	coder_mutex;
-	pthread_mutex_t	*left_dongle;
-	pthread_mutex_t	*right_dongle;
-	int				has_left;
-	int				has_right;
-}	t_coder;
+	pthread_t			thread;
+	pthread_mutex_t		mutex;
+	t_data				*data;
+	t_dongle			*first_dongle;
+	t_dongle			*second_dongle;
+	long				last_compile_time;
+	int					nb_compiles;
+	int					id;
+}						t_coder;
 
-int		parssing(t_args *args, int argc, char **argv);
-void	acquire_dongles_fifo(t_all *all, t_coder *coder);
-void	acquire_dongles_edf(t_all *all, t_coder *coder);
-void	cleanup(t_args *args, t_all *a, t_coder *co, pthread_mutex_t *mut);
-long	get_time(void);
-int		check_running(t_all *all);
-void	free_all(t_args *args, t_all *all, t_coder *coder);
-int		setup_mutex(pthread_mutex_t *m, t_all *all, t_args *args, t_coder *c);
-void	ft_usleep(long time_in_ms, t_coder *coder);
-int		check_burnout(t_all *all, t_coder *co, int i, long current);
-void	wait_for_dongle(t_all *all, int idx, int *flag);
-void	release_dongle(t_all *all, int idx, int *flag);
-void	*coder_routine(void *arg);
-void	set_order(t_coder *c, int l, int r, t_order *o);
+typedef struct s_dongle
+{
+	pthread_mutex_t		mutex;
+	pthread_cond_t		cond;
+	t_coder				*coders[2];
+	long				last_used;
+	int					is_currently_used;
+	int					nb_coders_waiting;
 
+}						t_dongle;
+
+long					ft_atol(const char *str);
+int						init_args(char **argv, t_args *args);
+int						init_data(t_data *data);
+void					print_status(t_coder *coder, char *msg, int force);
+void					join_threads(t_data *data, int count);
+int						start_threads(t_data *data);
+void					try_add_to_queue(t_dongle *dongle, t_coder *coder);
+int						is_cooldown_active(t_dongle *dongle, t_args args);
+void					pop_queue(t_dongle *dongle);
+int						take_dongles(t_coder *coder, t_args args);
+void					release_dongles(t_coder *coder);
+long					get_time_in_ms(void);
+void					ft_usleep(long time_in_ms, t_data *data);
+void					*monitor_routine(void *arg);
+void					lock_two_mutexes(t_coder *mutex1, t_coder *mutex2);
 #endif

@@ -6,41 +6,36 @@
 #    By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/08 13:35:54 by opernod           #+#    #+#              #
-#    Updated: 2026/04/30 18:39:32 by opernod          ###   ########lyon.fr    #
+#    Updated: 2026/05/01 13:19:13 by opernod          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = codexion
+NAME        = codexion
 
-# Colors
-COLOR_RESET = \033[0m
-COLOR_CYAN = \033[36m
-COLOR_GREEN = \033[32m
-COLOR_RED = \033[31m
-COLOR_YELLOW = \033[33m
+COLOR_RESET   = \033[0m
+COLOR_CYAN    = \033[36m
+COLOR_GREEN   = \033[32m
+COLOR_RED     = \033[31m
+COLOR_YELLOW  = \033[33m
 COLOR_MAGENTA = \033[35m
-COLOR_BLUE = \033[34m
+COLOR_BLUE    = \033[34m
 
-CC = cc
-CFLAGS = -Wall -Wextra -Werror -std=c89 -pthread -MMD -MP
+CC          = cc
+CFLAGS      = -Wall -Wextra -Werror -MMD -MP -g -pthread
 
-SRC_DIR = src
-OBJ_DIR = .obj
-ARGS = 10 10 10 10 10 1 1 fifo
+SRC_DIR     = src
+OBJ_DIR     = .obj
+
+SRC_FILES   = main.c init_args.c utils.c time_utils.c init_data.c \
+              codexion.c actions.c actions_utils.c monitor.c add_edf_util.c
+
+SRCS        = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
+OBJS        = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
+DEPS        = $(OBJS:.o=.d)
+
+ARGS          = 10 10 10 10 10 1 1 fifo
 valgrind_args = valgrind --leak-check=full --track-origins=yes
 helgrind_args = valgrind --tool=helgrind -s
-
-SRC_FILES = edf.c \
-            fifo.c \
-            ft_usleep.c \
-            main.c \
-            parssing.c \
-            utils2.c \
-            utils.c
-
-SRCS = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
-OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
-DEPS = $(OBJS:.o=.d)
 
 all: $(NAME)
 
@@ -60,7 +55,7 @@ $(OBJ_DIR):
 
 -include $(DEPS)
 
-run : all
+run: all
 	@echo "$(COLOR_MAGENTA)Running $(NAME)...$(COLOR_RESET)"
 	./$(NAME) $(ARGS)
 
@@ -71,6 +66,7 @@ valgrind: all
 helgrind: all
 	@echo "$(COLOR_MAGENTA)Running $(NAME) with Helgrind...$(COLOR_RESET)"
 	$(helgrind_args) ./$(NAME) $(ARGS)
+
 clean:
 	@rm -rf $(OBJ_DIR)
 	@echo "$(COLOR_YELLOW)Object files cleaned.$(COLOR_RESET)"
@@ -82,6 +78,7 @@ fclean: clean
 	@echo "$(COLOR_RED)Logs removed.$(COLOR_RESET)"
 
 re: fclean all
+
 
 lint:
 	@echo "$(COLOR_BLUE)Running norminette...$(COLOR_RESET)"
