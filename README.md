@@ -57,6 +57,19 @@ Effective handling of the coders relies heavily on POSIX threading primitives to
 - **Custom Event Implementation:** Rather than relying exclusively on complex `pthread_cond_t` broadcasts to wake sleeping threads, we combined granular mutex locks with a high-frequency polling approach inside our wait cycles (`ft_usleep`). Whenever a resource changes or a burnout triggers, the threads naturally break out of their sleep loops immediately by checking the safely-locked `check_running()` and `check_burnout()` status.
 - **Data Races tracking:** Using Helgrind and Valgrind, isolated data transitions between the observer monitor (in the main thread) and the active worker threads (coders) are guaranteed absolutely mutually exclusive.
 
+## Source Files
+
+The source code is organized in the `src/` directory with the following structure:
+
+- `main.c`: Entry point of the simulation.
+- `init_args.c` & `init_data.c`: Argument parsing and initialization of the main data structures.
+- `codexion.c`: The core logic for the simulation and the coder routine.
+- `actions.c` & `actions_utils.c`: Implementation of the actions a coder performs (taking dongles, compiling, debugging, refactoring).
+- `monitor.c`: The observer thread routine that monitors the state of all coders to detect burnouts.
+- `time_utils.c`: Time calculation functions and the micro-grained sleep routine (`ft_usleep`).
+- `utils.c`: General utility functions used throughout the project.
+- `add_edf_util.c`: Utilities for the Earliest Deadline First (EDF) thread scheduling logic.
+
 ## Resources
 
 - **Classic References:**
