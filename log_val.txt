@@ -1,0 +1,227 @@
+==1569923== Memcheck, a memory error detector
+==1569923== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1569923== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1569923== Command: ./codexion 5 800 200 200 200 5 10 edf
+==1569923== 
+==1569923== 
+==1569923== HEAP SUMMARY:
+==1569923==     in use at exit: 0 bytes in 0 blocks
+==1569923==   total heap usage: 11 allocs, 11 frees, 6,432 bytes allocated
+==1569923== 
+==1569923== All heap blocks were freed -- no leaks are possible
+==1569923== 
+==1569923== For lists of detected and suppressed errors, rerun with: -s
+==1569923== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==1571371== Memcheck, a memory error detector
+==1571371== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1571371== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1571371== Command: ./codexion 60 1000 200 100 100 5 200 fifo
+==1571371== 
+==1571371== 
+==1571371== HEAP SUMMARY:
+==1571371==     in use at exit: 0 bytes in 0 blocks
+==1571371==   total heap usage: 66 allocs, 66 frees, 30,192 bytes allocated
+==1571371== 
+==1571371== All heap blocks were freed -- no leaks are possible
+==1571371== 
+==1571371== For lists of detected and suppressed errors, rerun with: -s
+==1571371== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==1571449== Memcheck, a memory error detector
+==1571449== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1571449== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1571449== Command: ./codexion 199 1 0 0 0 8 1 edf
+==1571449== 
+==1571449== Thread 2:
+==1571449== Invalid read of size 8
+==1571449==    at 0x4016E1: edf_prio (in /home/opernod/42/codex/codexion)
+==1571449==    by 0x4013E3: wait_dongle_edf (in /home/opernod/42/codex/codexion)
+==1571449==    by 0x40122C: take_dongles_edf (in /home/opernod/42/codex/codexion)
+==1571449==    by 0x401D34: acquire_dongles_edf (in /home/opernod/42/codex/codexion)
+==1571449==    by 0x402ADD: coder_routine (in /home/opernod/42/codex/codexion)
+==1571449==    by 0x490AAC2: start_thread (pthread_create.c:442)
+==1571449==    by 0x499BA83: clone (clone.S:100)
+==1571449==  Address 0x18 is not stack'd, malloc'd or (recently) free'd
+==1571449== 
+==1571449== 
+==1571449== Process terminating with default action of signal 11 (SIGSEGV)
+==1571449==  Access not within mapped region at address 0x18
+==1571449==    at 0x4016E1: edf_prio (in /home/opernod/42/codex/codexion)
+==1571449==    by 0x4013E3: wait_dongle_edf (in /home/opernod/42/codex/codexion)
+==1571449==    by 0x40122C: take_dongles_edf (in /home/opernod/42/codex/codexion)
+==1571449==    by 0x401D34: acquire_dongles_edf (in /home/opernod/42/codex/codexion)
+==1571449==    by 0x402ADD: coder_routine (in /home/opernod/42/codex/codexion)
+==1571449==    by 0x490AAC2: start_thread (pthread_create.c:442)
+==1571449==    by 0x499BA83: clone (clone.S:100)
+==1571449==  If you believe this happened as a result of a stack
+==1571449==  overflow in your program's main thread (unlikely but
+==1571449==  possible), you can try to increase the size of the
+==1571449==  main thread stack using the --main-stacksize= flag.
+==1571449==  The main thread stack size used in this run was 8388608.
+==1571449== 
+==1571449== HEAP SUMMARY:
+==1571449==     in use at exit: 32,832 bytes in 8 blocks
+==1571449==   total heap usage: 8 allocs, 0 frees, 32,832 bytes allocated
+==1571449== 
+==1571449== Thread 1:
+==1571449== 816 bytes in 3 blocks are possibly lost in loss record 3 of 6
+==1571449==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==1571449==    by 0x40147D9: calloc (rtld-malloc.h:44)
+==1571449==    by 0x40147D9: allocate_dtv (dl-tls.c:375)
+==1571449==    by 0x40147D9: _dl_allocate_tls (dl-tls.c:634)
+==1571449==    by 0x490B7B4: allocate_stack (allocatestack.c:430)
+==1571449==    by 0x490B7B4: pthread_create@@GLIBC_2.34 (pthread_create.c:647)
+==1571449==    by 0x401EEE: init_threads (in /home/opernod/42/codex/codexion)
+==1571449==    by 0x40238F: main (in /home/opernod/42/codex/codexion)
+==1571449== 
+==1571449== LEAK SUMMARY:
+==1571449==    definitely lost: 0 bytes in 0 blocks
+==1571449==    indirectly lost: 0 bytes in 0 blocks
+==1571449==      possibly lost: 816 bytes in 3 blocks
+==1571449==    still reachable: 32,016 bytes in 5 blocks
+==1571449==         suppressed: 0 bytes in 0 blocks
+==1571449== Reachable blocks (those to which a pointer was found) are not shown.
+==1571449== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==1571449== 
+==1571449== For lists of detected and suppressed errors, rerun with: -s
+==1571449== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+Segmentation fault (core dumped)
+==1571464== Memcheck, a memory error detector
+==1571464== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1571464== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1571464== Command: ./codexion 20 1 1 1 0 12 0 edf
+==1571464== 
+==1571464== 
+==1571464== HEAP SUMMARY:
+==1571464==     in use at exit: 0 bytes in 0 blocks
+==1571464==   total heap usage: 26 allocs, 26 frees, 12,912 bytes allocated
+==1571464== 
+==1571464== All heap blocks were freed -- no leaks are possible
+==1571464== 
+==1571464== For lists of detected and suppressed errors, rerun with: -s
+==1571464== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==1571682== Memcheck, a memory error detector
+==1571682== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1571682== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1571682== Command: ./codexion 200 1000000 1 1 0 12 10 fifo
+==1571682== 
+==1571682== 
+==1571682== HEAP SUMMARY:
+==1571682==     in use at exit: 0 bytes in 0 blocks
+==1571682==   total heap usage: 206 allocs, 206 frees, 90,672 bytes allocated
+==1571682== 
+==1571682== All heap blocks were freed -- no leaks are possible
+==1571682== 
+==1571682== For lists of detected and suppressed errors, rerun with: -s
+==1571682== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==1571962== Memcheck, a memory error detector
+==1571962== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1571962== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1571962== Command: ./codexion 200 1000000 1 1 0 4 10 fifo
+==1571962== 
+==1571962== 
+==1571962== HEAP SUMMARY:
+==1571962==     in use at exit: 0 bytes in 0 blocks
+==1571962==   total heap usage: 206 allocs, 206 frees, 90,672 bytes allocated
+==1571962== 
+==1571962== All heap blocks were freed -- no leaks are possible
+==1571962== 
+==1571962== For lists of detected and suppressed errors, rerun with: -s
+==1571962== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==1572239== Memcheck, a memory error detector
+==1572239== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1572239== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1572239== Command: ./codexion 1 800 200 200 200 5 0 fifo
+==1572239== 
+==1572239== 
+==1572239== HEAP SUMMARY:
+==1572239==     in use at exit: 0 bytes in 0 blocks
+==1572239==   total heap usage: 7 allocs, 7 frees, 4,704 bytes allocated
+==1572239== 
+==1572239== All heap blocks were freed -- no leaks are possible
+==1572239== 
+==1572239== For lists of detected and suppressed errors, rerun with: -s
+==1572239== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==1572259== Memcheck, a memory error detector
+==1572259== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1572259== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1572259== Command: ./codexion 2 200 500 100 100 5 0 fifo
+==1572259== 
+==1572259== 
+==1572259== HEAP SUMMARY:
+==1572259==     in use at exit: 0 bytes in 0 blocks
+==1572259==   total heap usage: 8 allocs, 8 frees, 5,136 bytes allocated
+==1572259== 
+==1572259== All heap blocks were freed -- no leaks are possible
+==1572259== 
+==1572259== For lists of detected and suppressed errors, rerun with: -s
+==1572259== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==1572264== Memcheck, a memory error detector
+==1572264== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1572264== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1572264== Command: ./codexion 2 500 200 50 50 5 400 fifo
+==1572264== 
+==1572264== 
+==1572264== HEAP SUMMARY:
+==1572264==     in use at exit: 0 bytes in 0 blocks
+==1572264==   total heap usage: 8 allocs, 8 frees, 5,136 bytes allocated
+==1572264== 
+==1572264== All heap blocks were freed -- no leaks are possible
+==1572264== 
+==1572264== For lists of detected and suppressed errors, rerun with: -s
+==1572264== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==1572270== Memcheck, a memory error detector
+==1572270== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1572270== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1572270== Command: ./codexion 3 100 50 50 50 10 0 fifo
+==1572270== 
+==1572270== 
+==1572270== HEAP SUMMARY:
+==1572270==     in use at exit: 0 bytes in 0 blocks
+==1572270==   total heap usage: 9 allocs, 9 frees, 5,568 bytes allocated
+==1572270== 
+==1572270== All heap blocks were freed -- no leaks are possible
+==1572270== 
+==1572270== For lists of detected and suppressed errors, rerun with: -s
+==1572270== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==1572276== Memcheck, a memory error detector
+==1572276== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1572276== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1572276== Command: ./codexion 4 1000 200 100 100 5 0 fifo
+==1572276== 
+==1572276== 
+==1572276== HEAP SUMMARY:
+==1572276==     in use at exit: 0 bytes in 0 blocks
+==1572276==   total heap usage: 10 allocs, 10 frees, 6,000 bytes allocated
+==1572276== 
+==1572276== All heap blocks were freed -- no leaks are possible
+==1572276== 
+==1572276== For lists of detected and suppressed errors, rerun with: -s
+==1572276== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==1572345== Memcheck, a memory error detector
+==1572345== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1572345== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1572345== Command: ./codexion 2 800 200 100 100 3 0 fifo
+==1572345== 
+==1572345== 
+==1572345== HEAP SUMMARY:
+==1572345==     in use at exit: 0 bytes in 0 blocks
+==1572345==   total heap usage: 8 allocs, 8 frees, 5,136 bytes allocated
+==1572345== 
+==1572345== All heap blocks were freed -- no leaks are possible
+==1572345== 
+==1572345== For lists of detected and suppressed errors, rerun with: -s
+==1572345== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==1572371== Memcheck, a memory error detector
+==1572371== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==1572371== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==1572371== Command: ./codexion 2 1000 200 100 100 10 0 fifo
+==1572371== 
+==1572371== 
+==1572371== HEAP SUMMARY:
+==1572371==     in use at exit: 0 bytes in 0 blocks
+==1572371==   total heap usage: 8 allocs, 8 frees, 5,136 bytes allocated
+==1572371== 
+==1572371== All heap blocks were freed -- no leaks are possible
+==1572371== 
+==1572371== For lists of detected and suppressed errors, rerun with: -s
+==1572371== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

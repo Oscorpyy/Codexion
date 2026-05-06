@@ -5,54 +5,123 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/16 13:11:14 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/01 13:18:06 by opernod          ###   ########lyon.fr   */
+/*   Created: 2026/04/08 12:59:33 by opernod           #+#    #+#             */
+/*   Updated: 2026/04/30 15:40:24 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
+#define _XOPEN_SOURCE 500
 #include "../includes/codexion.h"
 
-static int	print_error(char *msg)
-{
-	fprintf(stderr, "%s", msg);
-	return (1);
-}
-
-static void	clean_data(t_data *data)
+int	init_threads(pthread_mutex_t *mut, t_coder *c, t_all *all)
 {
 	int	i;
 
-	i = 0;
-	while (i < data->args.nb_coders)
+	i = -1;
+	all->start_time = get_time();
+	while (++i < all->args->number_of_coders)
 	{
-		pthread_mutex_destroy(&data->all_dongles[i].mutex);
-		pthread_cond_destroy(&data->all_dongles[i].cond);
-		pthread_mutex_destroy(&data->all_coders[i].mutex);
-		i++;
+		c[i].id = i + 1;
+		c[i].write_mutex = mut;
+		c[i].all = all;
+		c[i].last_compile_time = all->start_time;
+		c[i].compiles_done = 0;
+		if (pthread_mutex_init(&c[i].coder_mutex, NULL) != 0)
+			return (i);
+		if (pthread_create(&c[i].thread_id, NULL, coder_routine, &c[i]) != 0)
+		{
+			pthread_mutex_destroy(&c[i].coder_mutex);
+			return (i);
+		}
 	}
-	free(data->all_dongles);
-	free(data->all_coders);
+	return (i);
+}
+
+int	check_burnout(t_all *all, t_coder *coders, int i, long current_time)
+{
+	if (current_time - coders[i].last_compile_time > all->args->time_to_burnout)
+	{
+		pthread_mutex_lock(&all->run_mutex);
+		if (!all->is_running)
+		{
+			pthread_mutex_unlock(&all->run_mutex);
+			pthread_mutex_unlock(&coders[i].coder_mutex);
+			return (1);
+		}
+		all->is_running = 0;
+		pthread_mutex_unlock(&all->run_mutex);
+		pthread_mutex_lock(coders[i].write_mutex);
+		printf("%ld %d burned out\n", current_time - all->start_time,
+			coders[i].id);
+		pthread_mutex_unlock(coders[i].write_mutex);
+		pthread_mutex_unlock(&coders[i].coder_mutex);
+		return (1);
+	}
+	return (0);
+}
+
+static int	check_single_coder(t_all *all, t_coder *c, int i)
+{
+	pthread_mutex_lock(&c[i].coder_mutex);
+	if (all->args->number_of_compiles_required != -1
+		&& c[i].compiles_done >= all->args->number_of_compiles_required)
+	{
+		pthread_mutex_unlock(&c[i].coder_mutex);
+		return (1);
+	}
+	if (check_burnout(all, c, i, get_time()))
+		return (-1);
+	pthread_mutex_unlock(&c[i].coder_mutex);
+	return (0);
+}
+
+void	monitor_routine(t_all *all, t_coder *coders, int all_c)
+{
+	int	i;
+	int	res;
+
+	while (check_running(all) && usleep(50) == 0)
+	{
+		i = -1;
+		all_c = 1;
+		while (++i < all->args->number_of_coders)
+		{
+			res = check_single_coder(all, coders, i);
+			if (res == -1)
+				return ;
+			if (res == 0)
+				all_c = 0;
+		}
+		if (all->args->number_of_compiles_required != -1 && all_c)
+		{
+			pthread_mutex_lock(&all->run_mutex);
+			all->is_running = 0;
+			pthread_mutex_unlock(&all->run_mutex);
+			return ;
+		}
+	}
 }
 
 int	main(int argc, char **argv)
 {
-	t_data	data;
+	t_args			*args;
+	t_coder			*co;
+	pthread_mutex_t	m;
+	t_all			*a;
 
-	if (argc != 9 || !init_args(argv, &data.args) || !init_data(&data))
-	{
-		return (print_error("Error\n"));
-	}
-	if (data.args.nb_compiles_required == 0)
-	{
-		clean_data(&data);
-		return (0);
-	}
-	if (!start_threads(&data))
-	{
-		clean_data(&data);
-		return (print_error("Error starting threads\n"));
-	}
-	join_threads(&data, data.args.nb_coders);
-	clean_data(&data);
+	a = calloc(1, sizeof(t_all));
+	args = calloc(1, sizeof(t_args));
+	if (!args || !a || parssing(args, argc, argv))
+		return (free_all(args, a, NULL), 1);
+	if (args->number_of_coders <= 0 || args->number_of_compiles_required == 0)
+		return (free_all(args, a, NULL), 0);
+	co = calloc(1, sizeof(t_coder) * args->number_of_coders);
+	if (!co || setup_mutex(&m, a, args, co))
+		return (free_all(args, a, co), 1);
+	if (init_threads(&m, co, a) == args->number_of_coders)
+		monitor_routine(a, co, 0);
+	else
+		a->is_running = 0;
+	cleanup(args, a, co, &m);
 	return (0);
 }
