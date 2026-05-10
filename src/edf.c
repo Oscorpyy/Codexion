@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   edf.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: aviscogl <aviscogl@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 16:18:07 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/06 17:50:26 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/10 14:30:04 by aviscogl         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,22 @@ void	set_order(t_coder *c, int l, int r, t_order *o);
 
 static int	edf_prio(t_coder *c1, t_coder *c2)
 {
-	long	t1;
-	long	t2;
+    if (c1 == NULL || c2 == NULL) {
+        return -1;
+    }
 
-	t1 = c1->last_compile_time;
-	t2 = c2->last_compile_time;
-	if (c1->compiles_done != -1
-		&& c1->compiles_done >= c1->all->args->number_of_compiles_required
-		&& c1->all->args->number_of_compiles_required != -1)
-		return (0);
-	if (t1 == t2)
-		return (c1->id < c2->id);
-	return (t1 < t2);
+    long	t1 = c1->last_compile_time;
+    long	t2 = c2->last_compile_time;
+
+    if (c1->compiles_done != -1
+        && c1->compiles_done >= c1->all->args->number_of_compiles_required
+        && c1->all->args->number_of_compiles_required != -1)
+        return (0);
+
+    if (t1 == t2)
+        return (c1->id < c2->id);
+
+    return (t1 < t2);
 }
 
 static void	wait_dongle_edf(t_all *a, t_coder *c, int t_d, int *f)
@@ -41,10 +45,15 @@ static void	wait_dongle_edf(t_all *a, t_coder *c, int t_d, int *f)
 	t_coder	*o;
 	long	cd;
 
+	if (a == NULL || c == NULL || t_d < 0 || t_d >= a->args->number_of_coders)
+		return ;
 	o = &a->coders[t_d];
 	if (t_d == c->id - 1)
-		o = &a->coders[(t_d - 1 + a->args->number_of_coders)
-			% a->args->number_of_coders];
+	{
+		int calculated_idx = (t_d - 1 + a->args->number_of_coders)
+			% a->args->number_of_coders;
+		o = &a->coders[calculated_idx];
+	}
 	while (check_running(a))
 	{
 		pthread_mutex_lock(&a->cooldown_mutex);
