@@ -28,11 +28,12 @@ int	init_threads(pthread_mutex_t *mut, t_coder *c, t_all *all)
 		c[i].compiles_done = 0;
 		if (pthread_mutex_init(&c[i].coder_mutex, NULL) != 0)
 			return (i);
+	}
+	i = -1;
+	while (++i < all->args->number_of_coders)
+	{
 		if (pthread_create(&c[i].thread_id, NULL, coder_routine, &c[i]) != 0)
-		{
-			pthread_mutex_destroy(&c[i].coder_mutex);
 			return (i);
-		}
 	}
 	return (i);
 }

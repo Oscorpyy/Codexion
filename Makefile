@@ -6,7 +6,7 @@
 #    By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/08 13:35:54 by opernod           #+#    #+#              #
-#    Updated: 2026/05/06 17:22:00 by opernod          ###   ########lyon.fr    #
+#    Updated: 2026/05/11 19:10:43 by opernod          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ COLOR_MAGENTA = \033[35m
 COLOR_BLUE = \033[34m
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -std=c89 -pthread -MMD -MP
+CFLAGS = -Wall -Wextra -Werror -std=c89 -pthread -MMD -MP -g
 
 SRC_DIR = src
 OBJ_DIR = .obj
@@ -91,7 +91,7 @@ lint:
 
 define RUN_TESTS
 	@echo "\033[34mBasic tests :\033[0m"
-	@echo "Press Enter to run : $(1) 5 800 200 200 200 5 10 edf"; read dummy; $(1) 5 800 200 200 200 5 10 edf || true
+	@echo "Press Enter to run : $(1) 5 1800 200 200 200 5 10 edf"; read dummy; $(1) 5 1800 200 200 200 5 10 edf || true
 	@echo "\033[34mBasic tests :\033[0m"
 	@echo "Press Enter to run : $(1) 60 1000 200 100 100 5 200 fifo"; read dummy; $(1) 60 1000 200 100 100 5 200 fifo || true
 	@echo ""; echo "\033[34mStress tests :\033[0m"
@@ -121,7 +121,7 @@ endef
 define RUN_TESTS_AUTO
 	@rm -f $(2)
 	@echo "\033[34mBasic tests :\033[0m"
-	@echo "Running : $(1) 5 800 200 200 200 5 10 edf"; $(1) 5 800 200 200 200 5 10 edf 2>>$(2) || true
+	@echo "Running : $(1) 5 1800 200 200 200 5 10 edf"; $(1) 5 1800 200 200 200 5 10 edf 2>>$(2) || true
 	@echo "\033[34mBasic tests :\033[0m"
 	@echo "Running : $(1) 60 1000 200 100 100 5 200 fifo"; $(1) 60 1000 200 100 100 5 200 fifo 2>>$(2) || true
 	@echo ""; echo "\033[34mStress tests :\033[0m"
