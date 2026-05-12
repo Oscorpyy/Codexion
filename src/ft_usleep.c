@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 18:09:54 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/06 17:27:11 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/12 11:25:26 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,14 @@ void	acquire_dongles_edf(t_all *all, t_coder *coder)
 			break ;
 		pthread_mutex_unlock(&coder->coder_mutex);
 	}
+}
+
+t_coder	*get_opponent(t_all *a, t_coder *c, int t_d)
+{
+	int	n;
+
+	n = a->args->number_of_coders;
+	if (t_d == c->id - 1)
+		return (&a->coders[(t_d - 1 + n) % n]);
+	return (&a->coders[t_d]);
 }

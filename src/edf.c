@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 16:18:07 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/11 19:08:27 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/12 11:24:55 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,7 @@ static void	wait_dongle_edf(t_all *a, t_coder *c, int t_d, int *f)
 {
 	t_coder	*o;
 
-	if (t_d == c->id - 1)
-		o = &a->coders[(t_d - 1 + a->args->number_of_coders) % a->args->number_of_coders];
-	else
-		o = &a->coders[t_d];
+	o = get_opponent(a, c, t_d);
 	while (check_running(a))
 	{
 		pthread_mutex_lock(&a->cooldown_mutex);
@@ -55,13 +52,12 @@ static void	wait_dongle_edf(t_all *a, t_coder *c, int t_d, int *f)
 			pthread_mutex_unlock(&a->cooldown_mutex);
 			if (edf_prio(o, c))
 				ft_usleep(1, c);
-			if (*f == 0 && pthread_mutex_trylock(&a->dongle_mutexes[t_d]) == 0)
+			if ((*f == 0 && pthread_mutex_trylock(&a->dongle_mutexes[t_d]) == 0)
+				|| *f == 1)
 			{
 				*f = 1;
 				return ;
 			}
-			if (*f == 1)
-				return ;
 		}
 		else
 			pthread_mutex_unlock(&a->cooldown_mutex);

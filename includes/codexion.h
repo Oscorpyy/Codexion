@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 13:09:44 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/06 17:28:45 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/12 11:25:17 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,6 @@ void	*coder_routine(void *arg);
 void	set_order(t_coder *c, int l, int r, t_order *o);
 int		compile_cycle(t_all *a, t_coder *c, int l, int r);
 int		take_dongles_edf(t_all *a, t_coder *c, int l, int r);
+t_coder	*get_opponent(t_all *a, t_coder *c, int t_d);
 
 #endif
