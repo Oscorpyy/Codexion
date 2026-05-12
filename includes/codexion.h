@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 13:09:44 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/12 11:25:17 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/12 11:37:14 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,22 +75,22 @@ typedef struct s_coder
 	int				has_right;
 }	t_coder;
 
-int		parssing(t_args *args, int argc, char **argv);
-void	acquire_dongles_fifo(t_all *all, t_coder *coder);
-void	acquire_dongles_edf(t_all *all, t_coder *coder);
-void	cleanup(t_args *args, t_all *a, t_coder *co, pthread_mutex_t *mut);
-long	get_time(void);
 int		check_running(t_all *all);
-void	free_all(t_args *args, t_all *all, t_coder *coder);
-int		setup_mutex(pthread_mutex_t *m, t_all *all, t_args *args, t_coder *c);
-void	ft_usleep(long time_in_ms, t_coder *coder);
-int		check_burnout(t_all *all, t_coder *co, int i, long current);
-void	wait_for_dongle(t_all *all, int idx, int *flag);
-void	release_dongle(t_all *all, int idx, int *flag);
-void	*coder_routine(void *arg);
-void	set_order(t_coder *c, int l, int r, t_order *o);
+int		parssing(t_args *args, int argc, char **argv);
 int		compile_cycle(t_all *a, t_coder *c, int l, int r);
 int		take_dongles_edf(t_all *a, t_coder *c, int l, int r);
+int		check_burnout(t_all *all, t_coder *co, int i, long current);
+int		setup_mutex(pthread_mutex_t *m, t_all *all, t_args *args, t_coder *c);
+void	*coder_routine(void *arg);
+void	ft_usleep(long time_in_ms, t_coder *coder);
+void	release_dongle(t_all *all, int idx, int *flag);
+void	set_order(t_coder *c, int l, int r, t_order *o);
+void	acquire_dongles_edf(t_all *all, t_coder *coder);
+void	wait_for_dongle(t_all *all, int idx, int *flag);
+void	acquire_dongles_fifo(t_all *all, t_coder *coder);
+void	free_all(t_args *args, t_all *all, t_coder *coder);
+void	cleanup(t_args *args, t_all *a, t_coder *co, pthread_mutex_t *mut);
+long	get_time(void);
 t_coder	*get_opponent(t_all *a, t_coder *c, int t_d);
 
 #endif
