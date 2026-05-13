@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 18:09:54 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/13 16:08:37 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/13 16:17:37 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ void	ft_usleep(long time_in_ms, t_coder *coder)
 
 	start = get_time();
 	while ((get_time() - start) < time_in_ms && check_running(coder->all)
-			&& !check_burnout(coder->all, coder->all->coders, coder->id - 1, get_time()))
+		&& !check_burnout(coder->all, coder->all->coders,
+			coder->id - 1, get_time()))
 	{
 		usleep(50);
 	}

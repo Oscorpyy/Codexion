@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 12:59:33 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/13 15:40:11 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/13 16:17:08 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,9 +87,9 @@ void	monitor_routine(t_all *all, t_coder *coders, int all_c)
 		{
 			res = check_single_coder(all, coders, i);
 			if (res == -1)
-			return ;
+				return ;
 			if (res == 0)
-			all_c = 0;
+				all_c = 0;
 		}
 		if (all->args->number_of_compiles_required != -1 && all_c)
 		{
