@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 14:52:57 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/30 15:51:47 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/13 15:35:20 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,23 @@ long	get_time(void)
 int	check_running(t_all *all)
 {
 	int	status;
-
 	pthread_mutex_lock(&all->run_mutex);
 	status = all->is_running;
 	pthread_mutex_unlock(&all->run_mutex);
 	return (status);
 }
 
-void	print_state(t_coder *coder, char *state)
+void	print_state(t_coder *coder, char *state, int force)
 {
 	long	current_time;
 
 	pthread_mutex_lock(coder->write_mutex);
 	if (check_running(coder->all))
+	{
+		current_time = get_time() - coder->all->start_time;
+		printf("%ld %d %s\n", current_time, coder->id, state);
+	}
+	if (force)
 	{
 		current_time = get_time() - coder->all->start_time;
 		printf("%ld %d %s\n", current_time, coder->id, state);

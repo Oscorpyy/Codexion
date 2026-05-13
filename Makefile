@@ -6,7 +6,7 @@
 #    By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/08 13:35:54 by opernod           #+#    #+#              #
-#    Updated: 2026/05/11 19:10:43 by opernod          ###   ########lyon.fr    #
+#    Updated: 2026/05/13 14:21:27 by opernod          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ CFLAGS = -Wall -Wextra -Werror -std=c89 -pthread -MMD -MP -g
 
 SRC_DIR = src
 OBJ_DIR = .obj
-ARGS = 2 10000 10 10 10 1 10 edf
+ARGS = 10 5000 100 100 100 10 1000 edf
 valgrind_args = valgrind --leak-check=full --track-origins=yes
 helgrind_args = valgrind --tool=helgrind -s
 
@@ -120,33 +120,33 @@ endef
 
 define RUN_TESTS_AUTO
 	@rm -f $(2)
-	@echo "\033[34mBasic tests :\033[0m"
-	@echo "Running : $(1) 5 1800 200 200 200 5 10 edf"; $(1) 5 1800 200 200 200 5 10 edf 2>>$(2) || true
-	@echo "\033[34mBasic tests :\033[0m"
-	@echo "Running : $(1) 60 1000 200 100 100 5 200 fifo"; $(1) 60 1000 200 100 100 5 200 fifo 2>>$(2) || true
-	@echo ""; echo "\033[34mStress tests :\033[0m"
-	@echo "Running : $(1) 199 1 0 0 0 8 1 edf"; $(1) 199 1 0 0 0 8 1 edf 2>>$(2) || true
-	@echo ""; echo "\033[34mStress tests :\033[0m"
-	@echo "Running : $(1) 20 1 1 1 0 12 0 edf"; $(1) 20 1 1 1 0 12 0 edf 2>>$(2) || true
-	@echo ""; echo "\033[34mStress tests :\033[0m"
-	@echo "Running : $(1) 200 1000000 1 1 0 12 10 fifo"; $(1) 200 1000000 1 1 0 12 10 fifo 2>>$(2) || true
-	@echo ""; echo "\033[34mStress tests :\033[0m"
-	@echo "Running : $(1) 200 1000000 1 1 0 4 10 fifo"; $(1) 200 1000000 1 1 0 4 10 fifo 2>>$(2) || true
-	@echo ""; echo "\033[34mBurnout for sure :\033[0m"
-	@echo "Running : $(1) 1 800 200 200 200 5 0 fifo"; $(1) 1 800 200 200 200 5 0 fifo 2>>$(2) || true
-	@echo ""; echo "\033[34mBurnout for sure :\033[0m"
-	@echo "Running : $(1) 2 200 500 100 100 5 0 fifo"; $(1) 2 200 500 100 100 5 0 fifo 2>>$(2) || true
-	@echo ""; echo "\033[34mBurnout for sure :\033[0m"
-	@echo "Running : $(1) 2 500 200 50 50 5 400 fifo"; $(1) 2 500 200 50 50 5 400 fifo 2>>$(2) || true
-	@echo ""; echo "\033[34mBurnout for sure :\033[0m"
-	@echo "Running : $(1) 3 100 50 50 50 10 0 fifo"; $(1) 3 100 50 50 50 10 0 fifo 2>>$(2) || true
-	@echo ""; echo "\033[34mNormal termination :\033[0m"
-	@echo "Running : $(1) 4 1000 200 100 100 5 0 fifo"; $(1) 4 1000 200 100 100 5 0 fifo 2>>$(2) || true
-	@echo ""; echo "\033[34mNormal termination :\033[0m"
-	@echo "Running : $(1) 2 800 200 100 100 3 0 fifo"; $(1) 2 800 200 100 100 3 0 fifo 2>>$(2) || true
-	@echo ""; echo "\033[34mTimestamp :\033[0m"
-	@echo "Running : $(1) 2 1000 200 100 100 10 0 fifo"; $(1) 2 1000 200 100 100 10 0 fifo 2>>$(2) || true
-	@echo "$(COLOR_GREEN)Logs saved in $(2)$(COLOR_RESET)"
+	@printf "\r\033[K$(COLOR_CYAN)[1/13]$(COLOR_RESET) $(COLOR_MAGENTA)Running test 1/13...$(COLOR_RESET)"
+	@$(1) 5 1800 200 200 200 5 10 edf > /dev/null 2>> $(2) || true
+	@printf "\r\033[K$(COLOR_CYAN)[2/13]$(COLOR_RESET) $(COLOR_MAGENTA)Running test 2/13...$(COLOR_RESET)"
+	@$(1) 60 1000 200 100 100 5 200 fifo > /dev/null 2>> $(2) || true
+	@printf "\r\033[K$(COLOR_CYAN)[3/13]$(COLOR_RESET) $(COLOR_MAGENTA)Running test 3/13...$(COLOR_RESET)"
+	@$(1) 199 1 0 0 0 8 1 edf > /dev/null 2>> $(2) || true
+	@printf "\r\033[K$(COLOR_CYAN)[4/13]$(COLOR_RESET) $(COLOR_MAGENTA)Running test 4/13...$(COLOR_RESET)"
+	@$(1) 20 1 1 1 0 12 0 edf > /dev/null 2>> $(2) || true
+	@printf "\r\033[K$(COLOR_CYAN)[5/13]$(COLOR_RESET) $(COLOR_MAGENTA)Running test 5/13...$(COLOR_RESET)"
+	@$(1) 200 1000000 1 1 0 12 10 fifo > /dev/null 2>> $(2) || true
+	@printf "\r\033[K$(COLOR_CYAN)[6/13]$(COLOR_RESET) $(COLOR_MAGENTA)Running test 6/13...$(COLOR_RESET)"
+	@$(1) 200 1000000 1 1 0 4 10 fifo > /dev/null 2>> $(2) || true
+	@printf "\r\033[K$(COLOR_CYAN)[7/13]$(COLOR_RESET) $(COLOR_MAGENTA)Running test 7/13...$(COLOR_RESET)"
+	@$(1) 1 800 200 200 200 5 0 fifo > /dev/null 2>> $(2) || true
+	@printf "\r\033[K$(COLOR_CYAN)[8/13]$(COLOR_RESET) $(COLOR_MAGENTA)Running test 8/13...$(COLOR_RESET)"
+	@$(1) 2 200 500 100 100 5 0 fifo > /dev/null 2>> $(2) || true
+	@printf "\r\033[K$(COLOR_CYAN)[9/13]$(COLOR_RESET) $(COLOR_MAGENTA)Running test 9/13...$(COLOR_RESET)"
+	@$(1) 2 500 200 50 50 5 400 fifo > /dev/null 2>> $(2) || true
+	@printf "\r\033[K$(COLOR_CYAN)[10/13]$(COLOR_RESET) $(COLOR_MAGENTA)Running test 10/13...$(COLOR_RESET)"
+	@$(1) 3 100 50 50 50 10 0 fifo > /dev/null 2>> $(2) || true
+	@printf "\r\033[K$(COLOR_CYAN)[11/13]$(COLOR_RESET) $(COLOR_MAGENTA)Running test 11/13...$(COLOR_RESET)"
+	@$(1) 4 1000 200 100 100 5 0 fifo > /dev/null 2>> $(2) || true
+	@printf "\r\033[K$(COLOR_CYAN)[12/13]$(COLOR_RESET) $(COLOR_MAGENTA)Running test 12/13...$(COLOR_RESET)"
+	@$(1) 2 800 200 100 100 3 0 fifo > /dev/null 2>> $(2) || true
+	@printf "\r\033[K$(COLOR_CYAN)[13/13]$(COLOR_RESET) $(COLOR_MAGENTA)Running test 13/13...$(COLOR_RESET)"
+	@$(1) 2 1000 200 100 100 10 0 fifo > /dev/null 2>> $(2) || true
+	@printf "\r\033[K$(COLOR_GREEN)Logs saved in $(2)$(COLOR_RESET)\n"
 endef
 
 tester: all
@@ -160,12 +160,11 @@ test_hell: all
 
 test: all
 	@echo "$(COLOR_BLUE)Running tests and saving results...$(COLOR_RESET)"
-
-	@make test_hell > log_hel.txt 2>&1 || echo "$(COLOR_RED)Helgrind failed$(COLOR_RESET)"
-	@make test_val  > log_val.txt 2>&1 || echo "$(COLOR_RED)Valgrind failed$(COLOR_RESET)"
-
+	@echo "$(COLOR_BLUE)Running $(COLOR_YELLOW)Helgrind $(COLOR_BLUE)tests...$(COLOR_RESET)"
+	@make test_hell || echo "$(COLOR_RED)Helgrind failed$(COLOR_RESET)"
+	@echo "$(COLOR_BLUE)Running $(COLOR_YELLOW)Valgrind $(COLOR_BLUE)tests...$(COLOR_RESET)"
+	@make test_val || echo "$(COLOR_RED)Valgrind failed$(COLOR_RESET)"
 	@echo "$(COLOR_GREEN)All tests completed. Logs saved in log_val.txt and log_hel.txt$(COLOR_RESET)"
-
 	@echo "$(COLOR_BLUE)Running tests checker...$(COLOR_RESET)"
 	@check_valhell .
 

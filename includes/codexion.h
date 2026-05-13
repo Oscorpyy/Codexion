@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 13:09:44 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/12 11:37:14 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/13 15:27:38 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ int		take_dongles_edf(t_all *a, t_coder *c, int l, int r);
 int		check_burnout(t_all *all, t_coder *co, int i, long current);
 int		setup_mutex(pthread_mutex_t *m, t_all *all, t_args *args, t_coder *c);
 void	*coder_routine(void *arg);
+void	print_state(t_coder *coder, char *state, int force);
 void	ft_usleep(long time_in_ms, t_coder *coder);
 void	release_dongle(t_all *all, int idx, int *flag);
 void	set_order(t_coder *c, int l, int r, t_order *o);
@@ -90,7 +91,10 @@ void	wait_for_dongle(t_all *all, int idx, int *flag);
 void	acquire_dongles_fifo(t_all *all, t_coder *coder);
 void	free_all(t_args *args, t_all *all, t_coder *coder);
 void	cleanup(t_args *args, t_all *a, t_coder *co, pthread_mutex_t *mut);
+void	mutex_lock_ordered(pthread_mutex_t *m1, pthread_mutex_t *m2,
+			int id1, int id2);
 long	get_time(void);
 t_coder	*get_opponent(t_all *a, t_coder *c, int t_d);
+
 
 #endif

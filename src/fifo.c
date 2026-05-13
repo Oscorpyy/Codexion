@@ -6,21 +6,12 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 15:16:10 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/30 17:40:22 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/13 16:09:34 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #define _XOPEN_SOURCE 500
 #include "../includes/codexion.h"
-
-/* Prototypes des fonctions externes */
-long	get_time(void);
-int		check_running(t_all *all);
-void	print_state(t_coder *coder, char *state);
-void	ft_usleep(long time, t_coder *coder);
-int		check_burnout(t_all *a, t_coder *c, int i, long t);
-void	wait_for_dongle(t_all *all, int idx, int *flag);
-void	release_dongle(t_all *all, int idx, int *flag);
 
 static void	release_dongles(t_all *a, t_coder *c, int l, int r)
 {
@@ -34,7 +25,7 @@ static void	release_dongles(t_all *a, t_coder *c, int l, int r)
 
 static int	do_cycle(t_all *a, t_coder *c, int l, int r)
 {
-	print_state(c, "is compiling");
+	print_state(c, "is compiling", 0);
 	pthread_mutex_lock(&c->coder_mutex);
 	c->last_compile_time = get_time();
 	pthread_mutex_unlock(&c->coder_mutex);
@@ -42,11 +33,9 @@ static int	do_cycle(t_all *a, t_coder *c, int l, int r)
 	release_dongles(a, c, l, r);
 	pthread_mutex_lock(&c->coder_mutex);
 	c->compiles_done++;
-	print_state(c, "is debugging");
+	print_state(c, "is debugging", 0);
 	ft_usleep(a->args->time_to_debug, c);
-	if (check_burnout(a, a->coders, c->id - 1, get_time()))
-		return (0);
-	print_state(c, "is refactoring");
+	print_state(c, "is refactoring", 0);
 	ft_usleep(a->args->time_to_refactor, c);
 	if (a->args->number_of_compiles_required != -1
 		&& c->compiles_done >= a->args->number_of_compiles_required)
@@ -55,6 +44,8 @@ static int	do_cycle(t_all *a, t_coder *c, int l, int r)
 		return (0);
 	}
 	pthread_mutex_unlock(&c->coder_mutex);
+	if (check_burnout(a, a->coders, c->id - 1, get_time()))
+		return (0);
 	return (1);
 }
 
@@ -80,7 +71,7 @@ static int	acquire_dongles(t_all *a, t_coder *c, int l, int r)
 		release_dongle(a, o.first, o.f_flag);
 		return (0);
 	}
-	print_state(c, "has taken a dongle");
+	print_state(c, "has taken a dongle", 0);
 	if (a->args->number_of_coders != 1)
 	{
 		wait_for_dongle(a, o.second, o.s_flag);
@@ -90,7 +81,7 @@ static int	acquire_dongles(t_all *a, t_coder *c, int l, int r)
 			release_dongle(a, o.first, o.f_flag);
 			return (0);
 		}
-		print_state(c, "has taken a dongle");
+		print_state(c, "has taken a dongle", 0);
 	}
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 12:59:33 by opernod           #+#    #+#             */
-/*   Updated: 2026/04/30 15:40:24 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/13 15:40:11 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,11 @@ int	check_burnout(t_all *all, t_coder *coders, int i, long current_time)
 		if (!all->is_running)
 		{
 			pthread_mutex_unlock(&all->run_mutex);
-			pthread_mutex_unlock(&coders[i].coder_mutex);
 			return (1);
 		}
 		all->is_running = 0;
 		pthread_mutex_unlock(&all->run_mutex);
-		pthread_mutex_lock(coders[i].write_mutex);
-		printf("%ld %d burned out\n", current_time - all->start_time,
-			coders[i].id);
-		pthread_mutex_unlock(coders[i].write_mutex);
-		pthread_mutex_unlock(&coders[i].coder_mutex);
+		print_state(&coders[i], "burned out", 1);
 		return (1);
 	}
 	return (0);
@@ -71,7 +66,10 @@ static int	check_single_coder(t_all *all, t_coder *c, int i)
 		return (1);
 	}
 	if (check_burnout(all, c, i, get_time()))
+	{
+		pthread_mutex_unlock(&c[i].coder_mutex);
 		return (-1);
+	}
 	pthread_mutex_unlock(&c[i].coder_mutex);
 	return (0);
 }
@@ -85,13 +83,13 @@ void	monitor_routine(t_all *all, t_coder *coders, int all_c)
 	{
 		i = -1;
 		all_c = 1;
-		while (++i < all->args->number_of_coders)
+		while (++i < all->args->number_of_coders && check_running(all))
 		{
 			res = check_single_coder(all, coders, i);
 			if (res == -1)
-				return ;
+			return ;
 			if (res == 0)
-				all_c = 0;
+			all_c = 0;
 		}
 		if (all->args->number_of_compiles_required != -1 && all_c)
 		{
@@ -124,5 +122,6 @@ int	main(int argc, char **argv)
 	else
 		a->is_running = 0;
 	cleanup(args, a, co, &m);
+	printf("Simulation with %s coders ended\n", argv[1]);
 	return (0);
 }

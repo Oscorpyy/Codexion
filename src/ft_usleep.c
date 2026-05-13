@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 18:09:54 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/12 11:25:26 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/13 16:08:37 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,10 @@ void	ft_usleep(long time_in_ms, t_coder *coder)
 	long	start;
 
 	start = get_time();
-	while ((get_time() - start) < time_in_ms && check_running(coder->all))
+	while ((get_time() - start) < time_in_ms && check_running(coder->all)
+			&& !check_burnout(coder->all, coder->all->coders, coder->id - 1, get_time()))
 	{
-		usleep(500);
+		usleep(50);
 	}
 }
 
@@ -70,4 +71,19 @@ t_coder	*get_opponent(t_all *a, t_coder *c, int t_d)
 	if (t_d == c->id - 1)
 		return (&a->coders[(t_d - 1 + n) % n]);
 	return (&a->coders[t_d]);
+}
+
+void	mutex_lock_ordered(pthread_mutex_t *m1, pthread_mutex_t *m2,
+						int id1, int id2)
+{
+	if (id1 < id2)
+	{
+		pthread_mutex_lock(m1);
+		pthread_mutex_lock(m2);
+	}
+	else
+	{
+		pthread_mutex_lock(m2);
+		pthread_mutex_lock(m1);
+	}
 }
