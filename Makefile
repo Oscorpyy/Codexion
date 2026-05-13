@@ -6,7 +6,7 @@
 #    By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/08 13:35:54 by opernod           #+#    #+#              #
-#    Updated: 2026/05/13 16:15:13 by opernod          ###   ########lyon.fr    #
+#    Updated: 2026/05/13 16:28:42 by opernod          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -158,12 +158,12 @@ test_val: all
 test_hell: all
 	$(call RUN_TESTS_AUTO,$(helgrind_args) ./$(NAME),log_hel.txt)
 
-test: all
+test: lint
 	@echo "$(COLOR_BLUE)Running tests and saving results...$(COLOR_RESET)"
 	@echo "$(COLOR_BLUE)Running $(COLOR_YELLOW)Helgrind $(COLOR_BLUE)tests...$(COLOR_RESET)"
-	@make test_hell || echo "$(COLOR_RED)Helgrind failed$(COLOR_RESET)"
+	@make --no-print-directory test_hell || echo "$(COLOR_RED)Helgrind failed$(COLOR_RESET)"
 	@echo "$(COLOR_BLUE)Running $(COLOR_YELLOW)Valgrind $(COLOR_BLUE)tests...$(COLOR_RESET)"
-	@make test_val || echo "$(COLOR_RED)Valgrind failed$(COLOR_RESET)"
+	@make --no-print-directory test_val || echo "$(COLOR_RED)Valgrind failed$(COLOR_RESET)"
 	@echo "$(COLOR_GREEN)All tests completed. Logs saved in log_val.txt and log_hel.txt$(COLOR_RESET)"
 	@echo "$(COLOR_BLUE)Running tests checker...$(COLOR_RESET)"
 	@check_valhell .
