@@ -6,7 +6,7 @@
 #    By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/08 13:35:54 by opernod           #+#    #+#              #
-#    Updated: 2026/05/13 16:28:42 by opernod          ###   ########lyon.fr    #
+#    Updated: 2026/05/16 15:57:18 by opernod          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -75,11 +75,13 @@ clean:
 	@rm -rf $(OBJ_DIR)
 	@echo "$(COLOR_YELLOW)Object files cleaned.$(COLOR_RESET)"
 
-fclean: clean
+log_clean:
+	@rm -f log_val.txt log_hel.txt
+	@echo "$(COLOR_YELLOW)Logs cleaned.$(COLOR_RESET)"
+
+fclean: clean log_clean
 	@rm -f $(NAME)
 	@echo "$(COLOR_RED)Executable removed.$(COLOR_RESET)"
-	@rm -f log_val.txt log_hel.txt
-	@echo "$(COLOR_RED)Logs removed.$(COLOR_RESET)"
 
 re: fclean all
 
@@ -168,4 +170,4 @@ test: lint
 	@echo "$(COLOR_BLUE)Running tests checker...$(COLOR_RESET)"
 	@check_valhell .
 
-.PHONY: all clean fclean re run test test_val test_hell valgrind helgrind lint
+.PHONY: all clean fclean re run test test_val test_hell valgrind helgrind lint log_clean

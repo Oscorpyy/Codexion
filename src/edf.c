@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 16:18:07 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/13 15:28:15 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/16 16:36:02 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ static int	edf_prio(t_coder *c1, t_coder *c2)
 	int		c1_done;
 	int		c2_done;
 
+	if (c1 == c2)
+		return (0);
 	if (c2->has_left || c2->has_right)
 		return (0);
 	mutex_lock_ordered(&c1->coder_mutex, &c2->coder_mutex, c1->id, c2->id);
@@ -79,17 +81,14 @@ int	take_dongles_edf(t_all *a, t_coder *c, int l, int r)
 		return (0);
 	}
 	print_state(c, "has taken a dongle", 0);
-	if (a->args->number_of_coders != 1)
+	wait_dongle_edf(a, c, o.second, o.s_flag);
+	if (!check_running(a))
 	{
-		wait_dongle_edf(a, c, o.second, o.s_flag);
-		if (!check_running(a))
-		{
-			release_dongle(a, o.second, o.s_flag);
-			release_dongle(a, o.first, o.f_flag);
-			return (0);
-		}
-		print_state(c, "has taken a dongle", 0);
+		release_dongle(a, o.second, o.s_flag);
+		release_dongle(a, o.first, o.f_flag);
+		return (0);
 	}
+	print_state(c, "has taken a dongle", 0);
 	return (1);
 }
 
