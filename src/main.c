@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 12:59:33 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/16 16:41:32 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/18 12:13:44 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,5 @@ int	main(int argc, char **argv)
 	else
 		a->is_running = 0;
 	cleanup(args, a, co, &m);
-	printf("Simulation with %s coders ended\n", argv[1]);
 	return (0);
 }
