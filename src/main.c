@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 12:59:33 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/19 14:25:48 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/19 17:15:08 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,19 @@ int	check_burnout(t_all *all, t_coder *coders, int i, long current_time)
 		return (1);
 	}
 	return (0);
+}
+
+int	check_compile_limit(t_all *a, t_coder *c)
+{
+	if (a->args->number_of_compiles_required > 0
+		&& c->compiles_done >= a->args->number_of_compiles_required)
+	{
+		pthread_mutex_lock(&c->coder_mutex);
+		c->last_compile_time = 2147483647;
+		pthread_mutex_unlock(&c->coder_mutex);
+		return (0);
+	}
+	return (1);
 }
 
 static void	start_simulation(t_all *a, t_coder *co, pthread_mutex_t *m)

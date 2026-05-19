@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 13:09:44 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/19 14:25:48 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/19 17:15:08 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ int		parssing(t_args *args, int argc, char **argv);
 int		compile_cycle(t_all *a, t_coder *c, int l, int r);
 int		take_dongles_edf(t_all *a, t_coder *c, int l, int r);
 int		check_burnout(t_all *all, t_coder *co, int i, long current);
+int		check_compile_limit(t_all *a, t_coder *c);
 int		setup_mutex(pthread_mutex_t *m, t_all *all, t_args *args, t_coder *c);
 void	*coder_routine(void *arg);
 void	print_state(t_coder *coder, char *state, int force);

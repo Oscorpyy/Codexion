@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 16:19:16 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/18 17:46:27 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/19 17:15:08 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,16 +71,12 @@ void	*coder_routine(void *arg)
 	return (NULL);
 }
 
-void	safe_dongle_op(pthread_mutex_t *mutex, int *flag, int action)
+t_coder	*get_opponent(t_all *a, t_coder *c, int t_d)
 {
-	if (action == LOCK && *flag == 0)
-	{
-		if (pthread_mutex_lock(mutex) == 0)
-			*flag = 1;
-	}
-	else if (action == UNLOCK && *flag == 1)
-	{
-		if (pthread_mutex_unlock(mutex) == 0)
-			*flag = 0;
-	}
+	int	n;
+
+	n = a->args->number_of_coders;
+	if (t_d == c->id - 1)
+		return (&a->coders[(t_d - 1 + n) % n]);
+	return (&a->coders[t_d]);
 }

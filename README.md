@@ -41,9 +41,9 @@ Run the program with the following mandatory arguments:
 
 Our simulation specifically addresses numerous concurrency hazards to maintain stability:
 - **Deadlock prevention & Coffman's conditions:** By strictly managing how dongles (shared resources) are acquired and released, we mathematically break the circular wait and hold-and-wait conditions.
-- **Starvation prevention:** Implemented precise fair-queueing mechanisms (like EDF - Earliest Deadline First) to ensure high-priority coders get their required dongles before they burn out.
+- **Starvation prevention:** Implemented precise fair-queueing mechanisms (like EDF - Earliest Deadline First) with intelligent tie-breakers (e.g., odd/even coder IDs priority) to prevent cascade delays and ensure high-priority coders get their required dongles before they burn out.
 - **Cooldown handling:** Managed through strict timestamp tracking to prevent coders from monopolizing resources instantly after releasing them.
-- **Precise burnout detection:** Instead of relying on long blocking `usleep` calls that delay death detection by tens of milliseconds, the project implements a micro-grained sleep routine (`ft_usleep`). It tests the environment's state every 50µs, enabling sub-millisecond death detection even with over 200 active threads.
+- **Precise burnout detection:** Instead of relying on long blocking `usleep` calls that delay death detection by tens of milliseconds, the project employs a dedicated, separate monitor thread alongside a micro-grained sleep routine (`ft_usleep`). They test the environment's state every 50µs, enabling highly precise burnout logging (within 10ms of the actual time) even with over 200 active threads.
 - **Log serialization:** All standard output printing is piped through a specific text execution mutex, ensuring that timestamps and states are printed chronologically and text buffers never interleave on `stdout`.
 
 ## Thread synchronization mechanisms
@@ -55,7 +55,7 @@ Effective handling of the coders relies heavily on POSIX threading primitives to
   - `run_mutex` safely tracks the `is_running` boolean to instantly notify all threads of a routine stop (e.g., when a coder burns out).
   - `coder_mutex` defends inner variables like `last_compile_time` and `compiles_done` from being read by the global monitor exactly when the coder thread updates them.
 - **Custom Event Implementation:** Rather than relying exclusively on complex `pthread_cond_t` broadcasts to wake sleeping threads, we combined granular mutex locks with a high-frequency polling approach inside our wait cycles (`ft_usleep`). Whenever a resource changes or a burnout triggers, the threads naturally break out of their sleep loops immediately by checking the safely-locked `check_running()` and `check_burnout()` status.
-- **Data Races tracking:** Using Helgrind and Valgrind, isolated data transitions between the observer monitor (in the main thread) and the active worker threads (coders) are guaranteed absolutely mutually exclusive.
+- **Data Races tracking:** Using Helgrind and Valgrind, isolated data transitions between the dedicated separate monitor thread and the active worker threads (coders) are guaranteed absolutely mutually exclusive.
 
 ## Resources
 
