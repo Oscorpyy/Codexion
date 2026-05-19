@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 16:19:16 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/18 12:37:03 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/18 17:46:27 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,20 @@ void	wait_for_dongle(t_all *all, int idx, int *flag)
 {
 	while (check_running(all))
 	{
-		pthread_mutex_lock(&all->cooldown_mutex);
-		if (get_time() >= all->dongle_cooldown_end[idx])
+		if (*flag == 0 && pthread_mutex_trylock(&all->dongle_mutexes[idx]) == 0)
 		{
-			pthread_mutex_unlock(&all->cooldown_mutex);
-			if (*flag == 0
-				&& pthread_mutex_trylock(&all->dongle_mutexes[idx]) == 0)
+			pthread_mutex_lock(&all->cooldown_mutex);
+			if (get_time() >= all->dongle_cooldown_end[idx])
 			{
 				*flag = 1;
+				pthread_mutex_unlock(&all->cooldown_mutex);
 				return ;
 			}
-			if (*flag == 1)
-				return ;
-		}
-		else
 			pthread_mutex_unlock(&all->cooldown_mutex);
+			pthread_mutex_unlock(&all->dongle_mutexes[idx]);
+		}
+		if (*flag == 1)
+			return ;
 		usleep(500);
 	}
 }

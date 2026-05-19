@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 12:59:33 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/18 12:13:44 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/19 14:25:48 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,49 +56,23 @@ int	check_burnout(t_all *all, t_coder *coders, int i, long current_time)
 	return (0);
 }
 
-static int	check_single_coder(t_all *all, t_coder *c, int i)
+static void	start_simulation(t_all *a, t_coder *co, pthread_mutex_t *m)
 {
-	pthread_mutex_lock(&c[i].coder_mutex);
-	if (all->args->number_of_compiles_required != -1
-		&& c[i].compiles_done >= all->args->number_of_compiles_required)
-	{
-		pthread_mutex_unlock(&c[i].coder_mutex);
-		return (1);
-	}
-	if (check_burnout(all, c, i, get_time()))
-	{
-		pthread_mutex_unlock(&c[i].coder_mutex);
-		return (-1);
-	}
-	pthread_mutex_unlock(&c[i].coder_mutex);
-	return (0);
-}
+	pthread_t	monitor_thread;
 
-void	monitor_routine(t_all *all, t_coder *coders, int all_c)
-{
-	int	i;
-	int	res;
-
-	while (check_running(all) && usleep(50) == 0)
+	if (init_threads(m, co, a) == a->args->number_of_coders)
 	{
-		i = -1;
-		all_c = 1;
-		while (++i < all->args->number_of_coders && check_running(all))
+		if (pthread_create(&monitor_thread, NULL, monitor_routine, a) != 0)
 		{
-			res = check_single_coder(all, coders, i);
-			if (res == -1)
-				return ;
-			if (res == 0)
-				all_c = 0;
+			pthread_mutex_lock(&a->run_mutex);
+			a->is_running = 0;
+			pthread_mutex_unlock(&a->run_mutex);
 		}
-		if (all->args->number_of_compiles_required != -1 && all_c)
-		{
-			pthread_mutex_lock(&all->run_mutex);
-			all->is_running = 0;
-			pthread_mutex_unlock(&all->run_mutex);
-			return ;
-		}
+		else
+			pthread_join(monitor_thread, NULL);
 	}
+	else
+		a->is_running = 0;
 }
 
 int	main(int argc, char **argv)
@@ -117,10 +91,7 @@ int	main(int argc, char **argv)
 	co = calloc(1, sizeof(t_coder) * args->number_of_coders);
 	if (!co || setup_mutex(&m, a, args, co))
 		return (free_all(args, a, co), 1);
-	if (init_threads(&m, co, a) == args->number_of_coders)
-		monitor_routine(a, co, 0);
-	else
-		a->is_running = 0;
+	start_simulation(a, co, &m);
 	cleanup(args, a, co, &m);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 13:09:44 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/13 16:15:42 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/19 14:25:48 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,9 @@ void	free_all(t_args *args, t_all *all, t_coder *coder);
 void	cleanup(t_args *args, t_all *a, t_coder *co, pthread_mutex_t *mut);
 void	mutex_lock_ordered(pthread_mutex_t *m1, pthread_mutex_t *m2,
 			int id1, int id2);
+void	*monitor_routine(void *arg_ptr);
 long	get_time(void);
 t_coder	*get_opponent(t_all *a, t_coder *c, int t_d);
+int		try_take_dongle(t_all *a, int t_d, int *flag);
 
 #endif

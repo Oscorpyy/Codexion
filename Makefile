@@ -6,7 +6,7 @@
 #    By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/08 13:35:54 by opernod           #+#    #+#              #
-#    Updated: 2026/05/18 14:51:22 by opernod          ###   ########lyon.fr    #
+#    Updated: 2026/05/19 14:25:48 by opernod          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,7 @@ SRC_FILES = edf.c \
             fifo.c \
             ft_usleep.c \
             main.c \
+            monitor.c \
             parssing.c \
             utils2.c \
             utils.c
@@ -160,7 +161,7 @@ test_val: all
 test_hell: all
 	$(call RUN_TESTS_AUTO,$(helgrind_args) ./$(NAME),log_hel.txt)
 
-mtest: lint
+both_test: lint
 	@echo "$(COLOR_BLUE)Running tests and saving results...$(COLOR_RESET)"
 	@echo "$(COLOR_BLUE)Running $(COLOR_YELLOW)Helgrind $(COLOR_BLUE)tests...$(COLOR_RESET)"
 	@make --no-print-directory test_hell || echo "$(COLOR_RED)Helgrind failed$(COLOR_RESET)"
@@ -174,4 +175,4 @@ test: all
 	@echo "$(COLOR_BLUE)Running tests with Python checker...$(COLOR_RESET)"
 	@checker . --no-print-directory
 
-.PHONY: all clean fclean re run test test_val test_hell valgrind helgrind lint log_clean
+.PHONY: all clean fclean re run test tester test_val test_hell valgrind helgrind lint log_clean both_test

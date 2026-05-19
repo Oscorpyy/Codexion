@@ -6,7 +6,7 @@
 /*   By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/29 16:18:07 by opernod           #+#    #+#             */
-/*   Updated: 2026/05/16 16:36:02 by opernod          ###   ########lyon.fr   */
+/*   Updated: 2026/05/19 14:25:48 by opernod          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static int	edf_prio(t_coder *c1, t_coder *c2)
 	if (c1_done != c2_done)
 		return (c1_done < c2_done);
 	if (t1 == t2)
-		return (c1->id < c2->id);
+		return (c1->id > c2->id);
 	return (t1 < t2);
 }
 
@@ -48,23 +48,13 @@ static void	wait_dongle_edf(t_all *a, t_coder *c, int t_d, int *flag)
 	o = get_opponent(a, c, t_d);
 	while (check_running(a))
 	{
-		pthread_mutex_lock(&a->cooldown_mutex);
-		if (get_time() >= a->dongle_cooldown_end[t_d])
+		if (a->args->number_of_coders > 1 && o && edf_prio(o, c))
 		{
-			pthread_mutex_unlock(&a->cooldown_mutex);
-			if (edf_prio(o, c))
-				ft_usleep(1, c);
-			if ((*flag == 0
-					&& pthread_mutex_trylock(&a->dongle_mutexes[t_d]) == 0))
-			{
-				*flag = 1;
-				return ;
-			}
-			if (*flag == 1)
-				return ;
+			ft_usleep(1, c);
+			continue ;
 		}
-		else
-			pthread_mutex_unlock(&a->cooldown_mutex);
+		if (try_take_dongle(a, t_d, flag))
+			return ;
 		ft_usleep(1, c);
 	}
 }
