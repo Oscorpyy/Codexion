@@ -6,7 +6,7 @@
 #    By: opernod <opernod@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/08 13:35:54 by opernod           #+#    #+#              #
-#    Updated: 2026/05/19 14:25:48 by opernod          ###   ########lyon.fr    #
+#    Updated: 2026/05/20 12:37:32 by opernod          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ CFLAGS = -Wall -Wextra -Werror -std=c89 -pthread -MMD -MP -g
 
 SRC_DIR = src
 OBJ_DIR = .obj
-ARGS = 2 5000 100 100 100 10 1000 fifo
+ARGS = 2 450 100 100 100 1 100 edf
 valgrind_args = valgrind --leak-check=full --track-origins=yes
 helgrind_args = valgrind --tool=helgrind -s
 
